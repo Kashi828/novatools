@@ -1,0 +1,12 @@
+{
+  "name": "NovaTools — Free Online Tools",
+  "short_name": "NovaTools",
+  "description": "Free online tools that save you time. No installation, no signup.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1120",
+  "theme_color": "#6366F1",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
