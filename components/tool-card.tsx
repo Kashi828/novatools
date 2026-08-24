@@ -8,8 +8,6 @@ export function ToolCard({ tool }: { tool: ToolDefinition }) {
   const category = getCategory(tool.category);
   return (
     <CardHoverWrapper>
-      <div className="absolute -inset-px rounded-xl2 bg-gradient-brand opacity-0 blur transition-opacity duration-300 group-hover:opacity-40" />
-
       <Link
         href={`/tools/${tool.slug}`}
         className="shine-sweep relative flex h-full flex-col gap-3 rounded-xl2 border border-black/5 bg-white/70 p-5 shadow-glass backdrop-blur-xl transition-colors duration-300 group-hover:border-primary-400/40 dark:border-white/10 dark:bg-white/5"

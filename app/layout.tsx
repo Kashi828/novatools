@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Space_Grotesk, Inter } from 'next/font/google';
+import { Playfair_Display, Inter } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -10,8 +10,9 @@ import { PromoBanner } from '@/components/promo-banner';
 import { ToastProvider } from '@/components/toast-provider';
 import { PageTransition } from '@/components/page-transition';
 
-const spaceGrotesk = Space_Grotesk({
+const playfair = Playfair_Display({
   subsets: ['latin'],
+  weight: ['500', '600', '700', '800'],
   variable: '--font-space-grotesk',
   display: 'swap',
 });
@@ -54,10 +55,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClerkProvider
       appearance={{
-        variables: { colorPrimary: '#6366F1' },
+        variables: { colorPrimary: '#C9A961' },
       }}
     >
-      <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`} suppressHydrationWarning>
+      <html lang="en" className={`${playfair.variable} ${inter.variable}`} suppressHydrationWarning>
         <body className="flex min-h-screen flex-col bg-noise">
           <ThemeProvider>
             <ToastProvider>

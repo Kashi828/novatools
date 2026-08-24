@@ -4,9 +4,11 @@ import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ToolShell } from '@/components/tool-shell';
 import { Button } from '@/components/ui/button';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Trophy, RotateCcw } from 'lucide-react';
 
-const COLORS = ['#6366F1', '#8B5CF6', '#06B6D4', '#22C55E', '#F59E0B', '#EF4444', '#EC4899', '#14B8A6'];
+const COLORS = ['#C9A961', '#4B5563', '#A97142', '#9CA3AF', '#8C6F37', '#6B7280', '#D4BB7C', '#374151'];
+
+const DEFAULT_OPTIONS = 'Pizza\nSushi\nTacos\nBurgers\nSalad\nPasta';
 
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
   const rad = ((angleDeg - 90) * Math.PI) / 180;
@@ -21,10 +23,12 @@ function describeSlice(cx: number, cy: number, r: number, startAngle: number, en
 }
 
 export function SpinWheel() {
-  const [optionsText, setOptionsText] = useState('Pizza\nSushi\nTacos\nBurgers\nSalad\nPasta');
+  const [optionsText, setOptionsText] = useState(DEFAULT_OPTIONS);
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [winner, setWinner] = useState<string | null>(null);
+  const [eliminationMode, setEliminationMode] = useState(false);
+  const [roundWinners, setRoundWinners] = useState<string[]>([]);
 
   const options = useMemo(
     () => optionsText.split('\n').map((o) => o.trim()).filter(Boolean).slice(0, 12),
@@ -39,7 +43,6 @@ export function SpinWheel() {
     setWinner(null);
 
     const winnerIndex = Math.floor(Math.random() * options.length);
-    // Land the winner at the top pointer (0deg), with several full extra spins for effect.
     const targetSliceCenter = winnerIndex * sliceAngle + sliceAngle / 2;
     const extraSpins = 5 + Math.floor(Math.random() * 3);
     const finalRotation = rotation - (rotation % 360) + extraSpins * 360 + (360 - targetSliceCenter);
@@ -49,6 +52,25 @@ export function SpinWheel() {
       setSpinning(false);
       setWinner(options[winnerIndex]);
     }, 4000);
+  }
+
+  function eliminateWinnerAndContinue() {
+    if (!winner) return;
+    setOptionsText((prev) =>
+      prev
+        .split('\n')
+        .filter((line) => line.trim() !== winner)
+        .join('\n')
+    );
+    setRoundWinners((prev) => [...prev, winner]);
+    setWinner(null);
+  }
+
+  function resetAll() {
+    setOptionsText(DEFAULT_OPTIONS);
+    setRoundWinners([]);
+    setWinner(null);
+    setRotation(0);
   }
 
   return (
@@ -62,6 +84,16 @@ export function SpinWheel() {
           className="w-full rounded-xl border border-black/10 bg-white/60 p-3 text-sm outline-none focus:border-primary-400 dark:border-white/10 dark:bg-white/5"
         />
       </div>
+
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          checked={eliminationMode}
+          onChange={(e) => setEliminationMode(e.target.checked)}
+          className="accent-primary-500"
+        />
+        Elimination mode — remove each winner and spin again for the next round
+      </label>
 
       <div className="flex flex-col items-center gap-6 py-4">
         <div className="relative h-72 w-72 sm:h-80 sm:w-80">
@@ -83,7 +115,7 @@ export function SpinWheel() {
                 const labelPos = polarToCartesian(100, 100, 62, mid);
                 return (
                   <g key={i}>
-                    <path d={describeSlice(100, 100, 95, start, end)} fill={COLORS[i % COLORS.length]} stroke="#0B1120" strokeWidth={1} />
+                    <path d={describeSlice(100, 100, 95, start, end)} fill={COLORS[i % COLORS.length]} stroke="#0A0A0B" strokeWidth={1} />
                     <text
                       x={labelPos.x}
                       y={labelPos.y}
@@ -101,23 +133,52 @@ export function SpinWheel() {
             ) : (
               <circle cx={100} cy={100} r={95} fill="#e5e7eb" />
             )}
-            <circle cx={100} cy={100} r={10} fill="#0B1120" stroke="white" strokeWidth={2} />
+            <circle cx={100} cy={100} r={10} fill="#0A0A0B" stroke="white" strokeWidth={2} />
           </motion.svg>
         </div>
 
-        <Button size="lg" disabled={options.length < 2 || spinning} onClick={spin}>
-          <Sparkles className="h-4 w-4" /> {spinning ? 'Spinning...' : 'Spin the wheel'}
-        </Button>
+        <div className="flex flex-wrap justify-center gap-2">
+          <Button size="lg" disabled={options.length < 2 || spinning} onClick={spin}>
+            <Sparkles className="h-4 w-4" /> {spinning ? 'Spinning...' : 'Spin the wheel'}
+          </Button>
+          {(roundWinners.length > 0 || optionsText !== DEFAULT_OPTIONS) && (
+            <Button size="lg" variant="ghost" onClick={resetAll}>
+              <RotateCcw className="h-4 w-4" /> Reset
+            </Button>
+          )}
+        </div>
 
         {winner && !spinning && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-            className="rounded-xl2 bg-gradient-brand px-6 py-3 text-center font-heading text-xl font-bold text-white shadow-glow"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex flex-col items-center gap-3"
           >
-            🎉 {winner}
+            <div className="rounded-xl2 bg-gradient-brand px-6 py-3 text-center font-heading text-xl font-semibold text-white shadow-glow">
+              {winner}
+            </div>
+            {eliminationMode && options.length > 2 && (
+              <Button size="sm" variant="outline" onClick={eliminateWinnerAndContinue}>
+                Remove &ldquo;{winner}&rdquo; &amp; spin next round
+              </Button>
+            )}
           </motion.div>
+        )}
+
+        {roundWinners.length > 0 && (
+          <div className="w-full">
+            <p className="mb-2 flex items-center gap-1.5 text-sm font-medium">
+              <Trophy className="h-4 w-4 text-primary-500" /> Round winners so far
+            </p>
+            <ol className="space-y-1 text-sm text-black/60 dark:text-white/60">
+              {roundWinners.map((w, i) => (
+                <li key={i}>
+                  {i + 1}. {w}
+                </li>
+              ))}
+            </ol>
+          </div>
         )}
       </div>
     </ToolShell>

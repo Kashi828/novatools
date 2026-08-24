@@ -14,13 +14,13 @@
     color-scheme: dark;
   }
   body {
-    @apply bg-bg-light font-body text-[#0B1120] antialiased dark:bg-bg-dark dark:text-white;
+    @apply bg-bg-light font-body text-[#1A1714] antialiased dark:bg-bg-dark dark:text-[#F0ECE3];
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    @apply font-heading tracking-tight;
   }
   ::selection {
-    @apply bg-primary-500/30;
+    @apply bg-primary-500/25;
   }
 }
 
@@ -29,31 +29,12 @@
     @apply bg-gradient-brand bg-clip-text text-transparent;
   }
   .bg-noise {
-    background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-    background-size: 22px 22px;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
   .animate-gradient-bg {
     background-size: 200% 200%;
     @apply animate-gradient-x;
-  }
-  .shine-sweep {
-    position: relative;
-    overflow: hidden;
-  }
-  .shine-sweep::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -75%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(115deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-    transform: skewX(-20deg);
-    transition: left 0.75s ease;
-    pointer-events: none;
-  }
-  .shine-sweep:hover::before {
-    left: 125%;
   }
 }
 

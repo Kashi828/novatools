@@ -11,53 +11,48 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // "primary" now carries the gold accent throughout the whole site — every
+        // bg-primary-*, text-primary-*, border-primary-*, accent-primary-* class in
+        // every one of the 61 tool components picks this up automatically.
         primary: {
-          DEFAULT: '#6366F1',
-          50: '#EEF0FF',
-          100: '#E0E4FF',
-          400: '#818CF8',
-          500: '#6366F1',
-          600: '#4F52D6',
-          700: '#3F42AD',
+          DEFAULT: '#C9A961',
+          50: '#FAF6EC',
+          100: '#F3E9CE',
+          400: '#D4BB7C',
+          500: '#C9A961',
+          600: '#B08D45',
+          700: '#8C6F37',
         },
         secondary: {
-          DEFAULT: '#8B5CF6',
-          400: '#A78BFA',
-          500: '#8B5CF6',
-          600: '#7C3AED',
+          DEFAULT: '#A97142',
+          400: '#C08B5C',
+          500: '#A97142',
+          600: '#8C5A34',
         },
         accent: {
-          DEFAULT: '#06B6D4',
-          400: '#22D3EE',
-          500: '#06B6D4',
+          DEFAULT: '#6B7280',
+          400: '#9CA3AF',
+          500: '#6B7280',
         },
         success: '#22C55E',
-        warning: '#F59E0B',
-        danger: '#EF4444',
-        gold: {
-          DEFAULT: '#D4AF37',
-          400: '#E9C766',
-          500: '#D4AF37',
-          600: '#B8912A',
-        },
+        warning: '#B08D45',
+        danger: '#B04545',
         bg: {
-          light: '#FFFFFF',
-          dark: '#050609',
+          light: '#FAF9F6',
+          dark: '#0A0A0B',
         },
       },
       fontFamily: {
-        heading: ['var(--font-space-grotesk)', 'sans-serif'],
+        heading: ['var(--font-space-grotesk)', 'serif'],
         body: ['var(--font-inter)', 'sans-serif'],
       },
       backgroundImage: {
-        'gradient-brand': 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 55%, #06B6D4 100%)',
-        'gradient-premium': 'linear-gradient(135deg, #6D28D9 0%, #8B5CF6 45%, #D4AF37 100%)',
+        'gradient-brand': 'linear-gradient(135deg, #D4BB7C 0%, #C9A961 50%, #A97142 100%)',
         'gradient-radial-glow':
-          'radial-gradient(circle at 50% 0%, rgba(99,102,241,0.25), transparent 60%)',
+          'radial-gradient(circle at 50% 0%, rgba(201,169,97,0.12), transparent 60%)',
       },
       boxShadow: {
-        glow: '0 0 40px -10px rgba(99,102,241,0.45)',
-        'glow-gold': '0 0 40px -8px rgba(212,175,55,0.5)',
+        glow: '0 0 40px -10px rgba(201,169,97,0.35)',
         glass: '0 8px 32px rgba(0,0,0,0.12)',
       },
       borderRadius: {

@@ -33,6 +33,10 @@ export default function AboutPage() {
           </div>
         ))}
       </div>
+
+      <div className="mt-12 border-t border-black/10 pt-8 text-center dark:border-white/10">
+        <p className="text-sm text-black/50 dark:text-white/50">Built by Kashinath</p>
+      </div>
     </div>
   );
 }

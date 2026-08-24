@@ -55,6 +55,7 @@ import {
   Coins,
   Timer,
   Watch,
+  Monitor,
 } from 'lucide-react';
 import type { ToolDefinition } from './types';
 import { PasswordGenerator } from '@/components/tools/password-generator';
@@ -118,6 +119,7 @@ import { DiceRoller } from '@/components/tools/dice-roller';
 import { CoinFlip } from '@/components/tools/coin-flip';
 import { CountdownTimer } from '@/components/tools/countdown-timer';
 import { Stopwatch } from '@/components/tools/stopwatch';
+import { DeviceInfo } from '@/components/tools/device-info';
 
 export const tools: ToolDefinition[] = [
   {
@@ -839,6 +841,18 @@ export const tools: ToolDefinition[] = [
     isNew: true,
     component: Stopwatch,
     relatedSlugs: ['countdown-timer'],
+  },
+  {
+    slug: 'device-info',
+    name: 'Device Info',
+    shortDescription: 'See details about your browser and device.',
+    description: 'View your browser, OS, screen resolution, viewport size, timezone, language, and battery level — all read directly from your own device.',
+    category: 'utility',
+    icon: Monitor,
+    keywords: ['device info', 'browser info', 'system info', 'what browser am i using'],
+    isNew: true,
+    component: DeviceInfo,
+    relatedSlugs: ['my-ip-address'],
   },
 ];
 
