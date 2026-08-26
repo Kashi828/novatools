@@ -3,6 +3,7 @@ import { ArrowRight, Zap, ShieldCheck, Sparkles, Star } from 'lucide-react';
 import { Hero } from '@/components/home/hero';
 import { ToolCard } from '@/components/tool-card';
 import { Reveal } from '@/components/reveal';
+import { StaggerGrid, StaggerItem } from '@/components/stagger-grid';
 import { categories } from '@/data/categories';
 import { getFeaturedTools, getNewTools, getTrendingTools, tools } from '@/data/tools';
 
@@ -48,11 +49,11 @@ export default function HomePage() {
             <span className="flex h-2 w-2 rounded-full bg-success" />
             <h2 className="font-heading text-2xl font-bold sm:text-3xl">New releases</h2>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StaggerGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {newTools.map((tool) => (
-              <ToolCard key={tool.slug} tool={tool} />
+              <StaggerItem key={tool.slug}><ToolCard tool={tool} /></StaggerItem>
             ))}
-          </div>
+          </StaggerGrid>
         </section>
       </Reveal>
       )}
@@ -65,11 +66,11 @@ export default function HomePage() {
             View all <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StaggerGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {trending.map((tool) => (
-            <ToolCard key={tool.slug} tool={tool} />
+            <StaggerItem key={tool.slug}><ToolCard tool={tool} /></StaggerItem>
           ))}
-        </div>
+        </StaggerGrid>
       </section>
       </Reveal>
 
@@ -78,11 +79,11 @@ export default function HomePage() {
         <div className="mb-6 flex items-center justify-between">
           <h2 className="font-heading text-2xl font-bold sm:text-3xl">Featured tools</h2>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StaggerGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {featured.map((tool) => (
-            <ToolCard key={tool.slug} tool={tool} />
+            <StaggerItem key={tool.slug}><ToolCard tool={tool} /></StaggerItem>
           ))}
-        </div>
+        </StaggerGrid>
       </section>
       </Reveal>
 

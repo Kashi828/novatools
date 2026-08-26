@@ -7,8 +7,7 @@
     </linearGradient>
   </defs>
   <rect width="100" height="100" rx="20" fill="#0A0A0B"/>
-  <circle cx="50" cy="50" r="38" fill="none" stroke="url(#g)" stroke-width="2"/>
-  <line x1="50" y1="24" x2="50" y2="30" stroke="url(#g)" stroke-width="1.5"/>
-  <line x1="50" y1="70" x2="50" y2="76" stroke="url(#g)" stroke-width="1.5"/>
-  <text x="50" y="63" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="38" fill="url(#g)">N</text>
+  <path d="M38 14 H62 L86 38 V62 L62 86 H38 L14 62 V38 Z" fill="none" stroke="url(#g)" stroke-width="2.5"/>
+  <path d="M50 30 C51 40 54 45 50 50 C54 55 51 60 50 70 C49 60 46 55 50 50 C46 45 49 40 50 30 Z
+           M30 50 C40 49 45 46 50 50 C55 46 60 49 70 50 C60 51 55 54 50 50 C45 54 40 51 30 50 Z" fill="url(#g)"/>
 </svg>

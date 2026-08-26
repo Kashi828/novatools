@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Moon, Sun, Search, Menu, X } from 'lucide-react';
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 import { Logo } from '@/components/logo';
+import { ThemePicker } from '@/components/theme-picker';
 import { useTheme } from '@/components/theme-provider';
 import { PROMO_MODE } from '@/lib/promo';
 
@@ -86,6 +87,7 @@ export function Navbar() {
           >
             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
+          <ThemePicker />
 
           {!PROMO_MODE && (
             <>

@@ -158,7 +158,7 @@ export function SpinWheel() {
             <div className="rounded-xl2 bg-gradient-brand px-6 py-3 text-center font-heading text-xl font-semibold text-white shadow-glow">
               {winner}
             </div>
-            {eliminationMode && options.length > 2 && (
+            {eliminationMode && options.length > 1 && (
               <Button size="sm" variant="outline" onClick={eliminateWinnerAndContinue}>
                 Remove &ldquo;{winner}&rdquo; &amp; spin next round
               </Button>

@@ -11,28 +11,28 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // "primary" now carries the gold accent throughout the whole site — every
-        // bg-primary-*, text-primary-*, border-primary-*, accent-primary-* class in
-        // every one of the 61 tool components picks this up automatically.
+        // Every shade reads from a CSS custom property so the 5 selectable color
+        // themes (set via [data-theme] on <html>) reskin the whole site — including
+        // all 60+ tool components — without editing them individually.
         primary: {
-          DEFAULT: '#C9A961',
-          50: '#FAF6EC',
-          100: '#F3E9CE',
-          400: '#D4BB7C',
-          500: '#C9A961',
-          600: '#B08D45',
-          700: '#8C6F37',
+          DEFAULT: 'rgb(var(--color-primary-500) / <alpha-value>)',
+          50: 'rgb(var(--color-primary-50) / <alpha-value>)',
+          100: 'rgb(var(--color-primary-100) / <alpha-value>)',
+          400: 'rgb(var(--color-primary-400) / <alpha-value>)',
+          500: 'rgb(var(--color-primary-500) / <alpha-value>)',
+          600: 'rgb(var(--color-primary-600) / <alpha-value>)',
+          700: 'rgb(var(--color-primary-700) / <alpha-value>)',
         },
         secondary: {
-          DEFAULT: '#A97142',
-          400: '#C08B5C',
-          500: '#A97142',
-          600: '#8C5A34',
+          DEFAULT: 'rgb(var(--color-secondary-500) / <alpha-value>)',
+          400: 'rgb(var(--color-secondary-400) / <alpha-value>)',
+          500: 'rgb(var(--color-secondary-500) / <alpha-value>)',
+          600: 'rgb(var(--color-secondary-600) / <alpha-value>)',
         },
         accent: {
-          DEFAULT: '#6B7280',
-          400: '#9CA3AF',
-          500: '#6B7280',
+          DEFAULT: 'rgb(var(--color-accent-500) / <alpha-value>)',
+          400: 'rgb(var(--color-accent-400) / <alpha-value>)',
+          500: 'rgb(var(--color-accent-500) / <alpha-value>)',
         },
         success: '#22C55E',
         warning: '#B08D45',
@@ -47,12 +47,13 @@ const config: Config = {
         body: ['var(--font-inter)', 'sans-serif'],
       },
       backgroundImage: {
-        'gradient-brand': 'linear-gradient(135deg, #D4BB7C 0%, #C9A961 50%, #A97142 100%)',
+        'gradient-brand':
+          'linear-gradient(135deg, rgb(var(--color-grad-1)) 0%, rgb(var(--color-grad-2)) 50%, rgb(var(--color-grad-3)) 100%)',
         'gradient-radial-glow':
-          'radial-gradient(circle at 50% 0%, rgba(201,169,97,0.12), transparent 60%)',
+          'radial-gradient(circle at 50% 0%, rgb(var(--color-glow) / 0.12), transparent 60%)',
       },
       boxShadow: {
-        glow: '0 0 40px -10px rgba(201,169,97,0.35)',
+        glow: '0 0 40px -10px rgb(var(--color-glow) / 0.35)',
         glass: '0 8px 32px rgba(0,0,0,0.12)',
       },
       borderRadius: {

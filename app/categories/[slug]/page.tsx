@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { categories, getCategory } from '@/data/categories';
 import { getToolsByCategory } from '@/data/tools';
 import { ToolCard } from '@/components/tool-card';
+import { StaggerGrid, StaggerItem } from '@/components/stagger-grid';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -40,16 +41,16 @@ export default async function CategoryPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <StaggerGrid className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {categoryTools.map((tool) => (
-          <ToolCard key={tool.slug} tool={tool} />
+          <StaggerItem key={tool.slug}><ToolCard tool={tool} /></StaggerItem>
         ))}
         {categoryTools.length === 0 && (
           <div className="col-span-full rounded-xl2 border border-dashed border-black/15 p-10 text-center text-black/50 dark:border-white/15 dark:text-white/50">
             Tools in this category are on the way.
           </div>
         )}
-      </div>
+      </StaggerGrid>
     </div>
   );
 }

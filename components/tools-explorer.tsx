@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { ToolCard } from '@/components/tool-card';
+import { StaggerGrid, StaggerItem } from '@/components/stagger-grid';
 import { categories } from '@/data/categories';
 import { searchTools } from '@/data/tools';
 import type { CategorySlug } from '@/data/types';
@@ -57,16 +58,16 @@ export function ToolsExplorer() {
       </div>
 
       <p className="mt-6 text-sm text-black/50 dark:text-white/50">{results.length} tools</p>
-      <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <StaggerGrid className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {results.map((tool) => (
-          <ToolCard key={tool.slug} tool={tool} />
+          <StaggerItem key={tool.slug}><ToolCard tool={tool} /></StaggerItem>
         ))}
         {results.length === 0 && (
           <div className="col-span-full rounded-xl2 border border-dashed border-black/15 p-10 text-center text-black/50 dark:border-white/15 dark:text-white/50">
             No tools match &ldquo;{query}&rdquo;. Try a different search.
           </div>
         )}
-      </div>
+      </StaggerGrid>
     </div>
   );
 }
