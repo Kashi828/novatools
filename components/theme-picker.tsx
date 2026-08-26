@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Palette, Check } from 'lucide-react';
+import { Palette, Check, Sliders } from 'lucide-react';
 import { useTheme, type ColorTheme } from '@/components/theme-provider';
 
-const THEMES: { key: ColorTheme; label: string; swatch: string }[] = [
+const PRESETS: { key: ColorTheme; label: string; swatch: string }[] = [
   { key: 'gold', label: 'Gold', swatch: '#C9A961' },
   { key: 'emerald', label: 'Emerald', swatch: '#34A876' },
   { key: 'sapphire', label: 'Sapphire', swatch: '#3E6FD9' },
@@ -13,7 +13,7 @@ const THEMES: { key: ColorTheme; label: string; swatch: string }[] = [
 ];
 
 export function ThemePicker() {
-  const { colorTheme, setColorTheme } = useTheme();
+  const { colorTheme, setColorTheme, customColors, setCustomColors } = useTheme();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -38,15 +38,12 @@ export function ThemePicker() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-52 rounded-xl border border-black/10 bg-white p-2 shadow-glass dark:border-white/10 dark:bg-[#111113]">
+        <div className="absolute right-0 z-50 w-64 rounded-xl border border-black/10 bg-white p-2 shadow-glass dark:border-white/10 dark:bg-[#111113]">
           <p className="px-2 py-1.5 text-xs font-medium uppercase tracking-wide text-black/40 dark:text-white/40">Color theme</p>
-          {THEMES.map((t) => (
+          {PRESETS.map((t) => (
             <button
               key={t.key}
-              onClick={() => {
-                setColorTheme(t.key);
-                setOpen(false);
-              }}
+              onClick={() => setColorTheme(t.key)}
               className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/10"
             >
               <span className="h-4 w-4 shrink-0 rounded-full border border-black/10 dark:border-white/20" style={{ backgroundColor: t.swatch }} />
@@ -54,6 +51,34 @@ export function ThemePicker() {
               {colorTheme === t.key && <Check className="h-3.5 w-3.5 text-primary-500" />}
             </button>
           ))}
+
+          <button
+            onClick={() => setColorTheme('custom')}
+            className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/10"
+          >
+            <Sliders className="h-4 w-4 shrink-0 text-black/50 dark:text-white/50" />
+            <span className="flex-1 text-left">Custom</span>
+            {colorTheme === 'custom' && <Check className="h-3.5 w-3.5 text-primary-500" />}
+          </button>
+
+          {colorTheme === 'custom' && (
+            <div className="mt-1 space-y-2 border-t border-black/10 px-2 pt-3 dark:border-white/10">
+              {(['primary', 'secondary', 'accent'] as const).map((key) => (
+                <div key={key} className="flex items-center justify-between gap-2">
+                  <label className="text-xs capitalize text-black/60 dark:text-white/60">{key}</label>
+                  <input
+                    type="color"
+                    value={customColors[key]}
+                    onChange={(e) => setCustomColors({ ...customColors, [key]: e.target.value })}
+                    className="h-7 w-12 cursor-pointer rounded border border-black/10 bg-transparent dark:border-white/20"
+                  />
+                </div>
+              ))}
+              <p className="pt-1 text-[11px] text-black/40 dark:text-white/40">
+                Pick 3 base colors — every shade used across the site is generated automatically.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

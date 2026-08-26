@@ -1,13 +1,23 @@
 <svg width="512" height="512" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#D4BB7C"/>
-      <stop offset="50%" stop-color="#C9A961"/>
+      <stop offset="100%" stop-color="#C9A961"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C9A961"/>
       <stop offset="100%" stop-color="#A97142"/>
+    </linearGradient>
+    <linearGradient id="g3" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#A97142"/>
+      <stop offset="100%" stop-color="#D4BB7C"/>
     </linearGradient>
   </defs>
   <rect width="100" height="100" rx="20" fill="#0A0A0B"/>
-  <path d="M38 14 H62 L86 38 V62 L62 86 H38 L14 62 V38 Z" fill="none" stroke="url(#g)" stroke-width="2.5"/>
-  <path d="M50 30 C51 40 54 45 50 50 C54 55 51 60 50 70 C49 60 46 55 50 50 C46 45 49 40 50 30 Z
-           M30 50 C40 49 45 46 50 50 C55 46 60 49 70 50 C60 51 55 54 50 50 C45 54 40 51 30 50 Z" fill="url(#g)"/>
+  <g transform="translate(50 50)">
+    <path d="M0 -4 C 14 -30, 34 -34, 44 -18 C 30 -14, 14 -8, 0 -4 Z" fill="url(#g1)"/>
+    <path d="M0 -4 C 14 -30, 34 -34, 44 -18 C 30 -14, 14 -8, 0 -4 Z" fill="url(#g2)" transform="rotate(120)"/>
+    <path d="M0 -4 C 14 -30, 34 -34, 44 -18 C 30 -14, 14 -8, 0 -4 Z" fill="url(#g3)" transform="rotate(240)"/>
+    <circle r="7" fill="#C9A961"/>
+  </g>
 </svg>

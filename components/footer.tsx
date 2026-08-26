@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { categories } from '@/data/categories';
+import { isAdminUser } from '@/lib/admin';
 
-export function Footer() {
+export async function Footer() {
+  const isAdmin = await isAdminUser();
   return (
     <footer className="border-t border-black/5 bg-black/[0.02] dark:border-white/10 dark:bg-white/[0.02]">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
@@ -45,6 +47,9 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-black/60 dark:text-white/60">
               <li><Link href="/privacy" className="hover:text-primary-500">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-primary-500">Terms of Service</Link></li>
+              {isAdmin && (
+                <li><Link href="/admin" className="hover:text-primary-500">Admin</Link></li>
+              )}
             </ul>
           </div>
         </div>

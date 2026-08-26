@@ -1127,7 +1127,7 @@ export const tools: ToolDefinition[] = [
     slug: 'periodic-table',
     name: 'Periodic Table Reference',
     shortDescription: 'Look up common chemical elements.',
-    description: 'A searchable quick-reference for commonly studied chemical elements, with atomic mass and category.',
+    description: 'A searchable, color-coded reference covering all 118 confirmed chemical elements, with atomic mass, category, group, and period.',
     category: 'student',
     icon: FlaskConical,
     keywords: ['periodic table', 'chemistry reference', 'elements'],
