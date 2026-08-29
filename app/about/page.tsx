@@ -1,42 +1,36 @@
 import type { Metadata } from 'next';
-import { Zap, ShieldCheck, Heart } from 'lucide-react';
+import { Zap, ShieldCheck, Heart, Sparkles } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'About',
-  description: 'Why NovaTools exists and what we believe about free software.',
+  description: 'NovaTools is a fast, private-first toolkit for everyday work.',
 };
+
+const principles = [
+  { icon: Zap, title: 'Fast by design', desc: 'Tools should respond immediately. We keep workflows focused and avoid making you wait for a simple job.' },
+  { icon: ShieldCheck, title: 'Private by default', desc: 'Where possible, work happens in your browser. Files and text are not silently stored just because you used a tool.' },
+  { icon: Heart, title: 'Useful for everyone', desc: 'Core tools are available without ads blocking the work or compulsory sign-up walls.' },
+];
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-      <h1 className="font-heading text-3xl font-bold sm:text-4xl">About NovaTools</h1>
-      <p className="mt-4 text-black/70 dark:text-white/70">
-        NovaTools started from a simple frustration: needing a quick tool — a password generator, a unit converter, a JSON
-        formatter — and having to wade through five ad-heavy sites before finding one that just worked. We&rsquo;re building
-        the opposite: a fast, clean, single place for the everyday tools people reach for constantly.
-      </p>
-      <p className="mt-4 text-black/70 dark:text-white/70">
-        Every core tool is free, requires no account, and where possible runs entirely in your browser — your input never touches
-        a server.
-      </p>
-
-      <div className="mt-10 grid gap-6 sm:grid-cols-3">
-        {[
-          { icon: Zap, title: 'Fast', desc: 'No bloat, no wait — tools open and respond instantly.' },
-          { icon: ShieldCheck, title: 'Private', desc: 'Most processing happens locally on your device.' },
-          { icon: Heart, title: 'Free', desc: 'No paywalls, no forced signups, ever.' },
-        ].map((v) => (
-          <div key={v.title} className="rounded-xl2 border border-black/5 bg-white/70 p-6 text-center shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
-            <v.icon className="mx-auto mb-3 h-7 w-7 text-primary-500" />
-            <h3 className="font-heading font-semibold">{v.title}</h3>
-            <p className="mt-1 text-sm text-black/60 dark:text-white/60">{v.desc}</p>
-          </div>
-        ))}
+    <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
+      <span className="inline-flex items-center gap-2 rounded-full bg-primary-500/10 px-3 py-1 text-xs font-semibold text-primary-600 dark:text-primary-400"><Sparkles className="h-3.5 w-3.5" /> Built for everyday momentum</span>
+      <h1 className="mt-4 font-heading text-3xl font-bold sm:text-5xl">One calm place for the tools you reach for every day.</h1>
+      <div className="mt-6 max-w-3xl space-y-4 text-black/70 dark:text-white/70">
+        <p>NovaTools began with a familiar frustration: needing a quick converter, generator, formatter, or calculator and having to push through cluttered, ad-heavy pages before finding one that simply works.</p>
+        <p>We are building the opposite: a growing, well-made collection of tools that open quickly, explain themselves clearly, and respect your time. Most run locally on your device, so your input stays with you.</p>
+        <p>NovaTools is independently built by Kashinath. The product evolves from real requests—if a workflow feels awkward or a tool is missing, we want to hear about it.</p>
       </div>
 
-      <div className="mt-12 border-t border-black/10 pt-8 text-center dark:border-white/10">
-        <p className="text-sm text-black/50 dark:text-white/50">Built by Kashinath</p>
+      <div className="mt-12 grid gap-5 sm:grid-cols-3">
+        {principles.map((principle) => <div key={principle.title} className="rounded-xl2 border border-black/5 bg-white/70 p-6 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-white/5"><principle.icon className="mb-4 h-7 w-7 text-primary-500" /><h2 className="font-heading text-lg font-semibold">{principle.title}</h2><p className="mt-2 text-sm leading-6 text-black/60 dark:text-white/60">{principle.desc}</p></div>)}
       </div>
+
+      <section className="mt-14 rounded-xl2 border border-primary-400/25 bg-primary-50/40 p-7 dark:bg-primary-500/5">
+        <h2 className="font-heading text-xl font-semibold">What we are building next</h2>
+        <p className="mt-2 text-sm leading-6 text-black/65 dark:text-white/65">A deeper catalogue, better personalisation, and a more capable in-site admin workspace—so NovaTools can grow without losing its speed or simplicity.</p>
+      </section>
     </div>
   );
 }
