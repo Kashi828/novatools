@@ -27,8 +27,7 @@
   .text-gradient { @apply bg-gradient-brand bg-clip-text text-transparent; }
   .bg-noise { background-image: radial-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px); background-size: 24px 24px; }
   .animate-gradient-bg { background-size: 200% 200%; @apply animate-gradient-x; }
-  .nova-title { color: transparent; background: linear-gradient(135deg, #fff7d9 0%, var(--logo-grad-1) 28%, var(--logo-grad-2) 52%, var(--logo-grad-3) 78%, #6f431c 100%); background-clip: text; -webkit-background-clip: text; filter: drop-shadow(0 1px 0 rgb(255 255 255 / .35)) drop-shadow(0 3px 2px rgb(0 0 0 / .22)); }
-  html:not(.dark) .nova-title { filter: drop-shadow(0 1px 0 rgb(255 255 255 / .9)) drop-shadow(0 2px 1px rgb(74 47 18 / .18)); }
+  .nova-title { color: transparent; background: linear-gradient(135deg, var(--logo-grad-1) 0%, var(--logo-grad-2) 48%, var(--logo-grad-3) 100%); background-clip: text; -webkit-background-clip: text; filter: drop-shadow(0 2px 1px rgb(var(--color-glow) / .25)) drop-shadow(0 3px 2px rgb(0 0 0 / .18)); }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
