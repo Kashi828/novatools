@@ -30,6 +30,11 @@
   .nova-title { color: transparent; background: linear-gradient(135deg, var(--logo-grad-1) 0%, var(--logo-grad-2) 48%, var(--logo-grad-3) 100%); background-clip: text; -webkit-background-clip: text; filter: drop-shadow(0 2px 1px rgb(var(--color-glow) / .25)) drop-shadow(0 3px 2px rgb(0 0 0 / .18)); }
 }
 
+/* Apply the chosen corner language to every interactive surface, including the header. */
+html[data-radius='sharp'] [class*='rounded'] { border-radius: .375rem !important; }
+html[data-radius='rounded'] [class*='rounded'] { border-radius: 1rem; }
+html[data-radius='pill'] [class*='rounded'] { border-radius: 9999px !important; }
+
 html[data-ui-scale='compact'] { font-size: 14px; }
 html[data-ui-scale='comfortable'] { font-size: 16px; }
 html[data-ui-scale='large'] { font-size: 18px; }
