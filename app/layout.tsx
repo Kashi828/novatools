@@ -7,6 +7,7 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { CommandPalette } from '@/components/command-palette';
 import { PromoBanner } from '@/components/promo-banner';
+import { SiteAnnouncement } from '@/components/site-announcement';
 import { ToastProvider } from '@/components/toast-provider';
 import { PageTransition } from '@/components/page-transition';
 
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <body className="flex min-h-screen flex-col bg-noise">
           <ThemeProvider>
             <ToastProvider>
+              <SiteAnnouncement />
               <PromoBanner />
               <Navbar />
               <CommandPalette />
