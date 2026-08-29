@@ -32,10 +32,11 @@ export function ThemePicker() {
   const { colorTheme, setColorTheme, customColors, setCustomColors, fontPairing, setFontPairing, radiusStyle, setRadiusStyle, uiScale, setUiScale, motionPreference, setMotionPreference } = useTheme();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+      if (rootRef.current && !rootRef.current.contains(e.target as Node) && !panelRef.current?.contains(e.target as Node)) setOpen(false);
     }
     document.addEventListener('mousedown', onClickOutside);
     return () => document.removeEventListener('mousedown', onClickOutside);
@@ -54,7 +55,8 @@ export function ThemePicker() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 max-h-[80vh] w-72 overflow-y-auto rounded-xl border border-black/10 bg-white p-2 shadow-glass dark:border-white/10 dark:bg-[#111113]">
+        <div className="fixed inset-0 z-[60] flex items-start justify-center bg-black/45 p-4 pt-20 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Appearance settings">
+        <div ref={panelRef} className="max-h-[calc(100vh-6rem)] w-full max-w-sm overflow-y-auto rounded-xl border border-black/10 bg-white p-2 shadow-2xl dark:border-white/10 dark:bg-[#111113]">
           <p className="px-2 py-1.5 text-xs font-medium uppercase tracking-wide text-black/40 dark:text-white/40">Color theme</p>
           {PRESETS.map((t) => (
             <button
@@ -131,6 +133,7 @@ export function ThemePicker() {
               </button>
             ))}
           </div>
+        </div>
         </div>
       )}
     </div>
