@@ -7,6 +7,8 @@ type Theme = 'light' | 'dark';
 export type ColorTheme = 'gold' | 'emerald' | 'sapphire' | 'rose' | 'monochrome' | 'custom';
 export type FontPairing = 'elegant' | 'modern' | 'classic' | 'rounded';
 export type RadiusStyle = 'sharp' | 'rounded' | 'pill';
+export type UiScale = 'compact' | 'comfortable' | 'large';
+export type MotionPreference = 'full' | 'reduced';
 
 export interface CustomColors {
   primary: string;
@@ -25,6 +27,10 @@ interface ThemeContextValue {
   setFontPairing: (f: FontPairing) => void;
   radiusStyle: RadiusStyle;
   setRadiusStyle: (r: RadiusStyle) => void;
+  uiScale: UiScale;
+  setUiScale: (scale: UiScale) => void;
+  motionPreference: MotionPreference;
+  setMotionPreference: (preference: MotionPreference) => void;
 }
 
 const DEFAULT_CUSTOM: CustomColors = { primary: '#C9A961', secondary: '#A97142', accent: '#6B7280' };
@@ -73,12 +79,18 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [customColors, setCustomColorsState] = useState<CustomColors>(DEFAULT_CUSTOM);
   const [fontPairing, setFontPairingState] = useState<FontPairing>('elegant');
   const [radiusStyle, setRadiusStyleState] = useState<RadiusStyle>('rounded');
+  const [uiScale, setUiScaleState] = useState<UiScale>('comfortable');
+  const [motionPreference, setMotionPreferenceState] = useState<MotionPreference>('full');
 
   useEffect(() => {
     const storedFont = window.localStorage.getItem('novatools-font') as FontPairing | null;
     if (storedFont) setFontPairingState(storedFont);
     const storedRadius = window.localStorage.getItem('novatools-radius') as RadiusStyle | null;
     if (storedRadius) setRadiusStyleState(storedRadius);
+    const storedScale = window.localStorage.getItem('novatools-ui-scale') as UiScale | null;
+    if (storedScale) setUiScaleState(storedScale);
+    const storedMotion = window.localStorage.getItem('novatools-motion') as MotionPreference | null;
+    if (storedMotion) setMotionPreferenceState(storedMotion);
   }, []);
 
   useEffect(() => {
@@ -90,6 +102,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.documentElement.setAttribute('data-radius', radiusStyle);
     window.localStorage.setItem('novatools-radius', radiusStyle);
   }, [radiusStyle]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-ui-scale', uiScale);
+    window.localStorage.setItem('novatools-ui-scale', uiScale);
+  }, [uiScale]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-motion', motionPreference);
+    window.localStorage.setItem('novatools-motion', motionPreference);
+  }, [motionPreference]);
 
   useEffect(() => {
     const storedTheme = window.localStorage.getItem('novatools-theme') as Theme | null;
@@ -148,6 +170,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         setFontPairing: setFontPairingState,
         radiusStyle,
         setRadiusStyle: setRadiusStyleState,
+        uiScale,
+        setUiScale: setUiScaleState,
+        motionPreference,
+        setMotionPreference: setMotionPreferenceState,
       }}
     >
       {children}
