@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 import { ToolShell } from '@/components/tool-shell';
-import { Button } from '@/components/ui/button';
 
 const field = 'w-full rounded-xl border border-black/10 bg-white/60 p-3 text-sm outline-none focus:border-primary-400 dark:border-white/10 dark:bg-white/5';
 
