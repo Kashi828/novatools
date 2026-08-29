@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { ToolShell } from '@/components/tool-shell';
 import { Button } from '@/components/ui/button';
+import { Select } from '@/components/ui/select';
 import { RefreshCw } from 'lucide-react';
 
 const fieldClass = 'w-full rounded-xl border border-black/10 bg-white/60 p-3 text-sm outline-none focus:border-primary-400 dark:border-white/10 dark:bg-white/5';
@@ -28,9 +29,7 @@ export function TextSorter() {
       <textarea value={output} readOnly rows={10} placeholder="Sorted result appears here..." className={fieldClass} />
     </div>
     <label className="block text-sm font-medium">Sort order
-      <select value={mode} onChange={(e) => setMode(e.target.value)} className={fieldClass}>
-        <option value="alpha">A to Z</option><option value="reverse">Z to A</option><option value="length">Shortest to longest</option><option value="random">Randomize</option>
-      </select>
+      <Select value={mode} onChange={setMode} options={[{ value: 'alpha', label: 'A to Z' }, { value: 'reverse', label: 'Z to A' }, { value: 'length', label: 'Shortest to longest' }, { value: 'random', label: 'Randomize' }]} />
     </label>
   </ToolShell>;
 }
@@ -60,7 +59,7 @@ export function TextRepeater() {
 
   return <ToolShell outputValue={output} onReset={() => setText('')} shareSlug="text-repeater">
     <textarea value={text} onChange={(e) => setText(e.target.value)} rows={5} placeholder="Text to repeat..." className={fieldClass} />
-    <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm font-medium">Times<input type="number" min="0" max="1000" value={times} onChange={(e) => setTimes(e.target.value)} className={fieldClass} /></label><label className="text-sm font-medium">Separate with<select value={separator} onChange={(e) => setSeparator(e.target.value)} className={fieldClass}><option value="newline">New line</option><option value="space">Space</option><option value="none">Nothing</option></select></label></div>
+    <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm font-medium">Times<input type="number" min="0" max="1000" value={times} onChange={(e) => setTimes(e.target.value)} className={fieldClass} /></label><label className="text-sm font-medium">Separate with<Select value={separator} onChange={setSeparator} options={[{ value: 'newline', label: 'New line' }, { value: 'space', label: 'Space' }, { value: 'none', label: 'Nothing' }]} /></label></div>
     <textarea value={output} readOnly rows={8} className={fieldClass} />
   </ToolShell>;
 }
