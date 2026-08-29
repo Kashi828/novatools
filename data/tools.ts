@@ -177,6 +177,7 @@ import { ColorBlindnessSimulator } from '@/components/tools/color-blindness-simu
 import { ReadabilityChecker } from '@/components/tools/readability-checker';
 import { TextSorter, LineNumberer, TextRepeater, RandomPicker, DateDifferenceCalculator, UrlParser, HtmlEntityTool, BinaryTextConverter, XmlFormatter } from '@/components/tools/new-tool-batch';
 import { TextCleaner, WordFrequencyCounter, JsonToCsvConverter, CsvColumnExtractor, PercentageChangeCalculator, DiscountCalculator, WorkingDaysCalculator } from '@/components/tools/new-tool-batch-two';
+import { SplitBillCalculator, FuelCostCalculator, RecipeScaler, SavingsGoalCalculator, GroceryList, TravelBudgetCalculator, PetAgeCalculator } from '@/components/tools/everyday-tool-batch';
 
 export const tools: ToolDefinition[] = [
   {
@@ -1383,6 +1384,14 @@ export const tools: ToolDefinition[] = [
     component: WorkingDaysCalculator,
     relatedSlugs: ['date-difference-calculator', 'age-calculator'],
   },
+
+  { slug: 'split-bill-calculator', name: 'Split Bill Calculator', shortDescription: 'Split a bill with tip between friends.', description: 'Work out the total, tip, and equal share for every person.', category: 'finance', icon: Users, keywords: ['split bill', 'bill splitter', 'tip split'], isNew: true, component: SplitBillCalculator, relatedSlugs: ['tip-calculator', 'discount-calculator'] },
+  { slug: 'fuel-cost-calculator', name: 'Fuel Cost Calculator', shortDescription: 'Estimate the cost of a road trip.', description: 'Calculate fuel required and travel cost from distance, mileage, and fuel price.', category: 'finance', icon: Landmark, keywords: ['fuel cost', 'petrol calculator', 'trip fuel'], isNew: true, component: FuelCostCalculator, relatedSlugs: ['travel-budget-calculator', 'unit-converter'] },
+  { slug: 'recipe-scaler', name: 'Recipe Scaler', shortDescription: 'Scale ingredient quantities for any serving size.', description: 'Adjust a recipe for more or fewer people while keeping every quantity proportional.', category: 'utility', icon: Scale3d, keywords: ['recipe scaler', 'recipe servings', 'cooking calculator'], isNew: true, component: RecipeScaler, relatedSlugs: ['unit-converter', 'grocery-list'] },
+  { slug: 'savings-goal-calculator', name: 'Savings Goal Calculator', shortDescription: 'See how long it takes to reach a savings goal.', description: 'Calculate the number of months needed based on your goal, current savings, and monthly contribution.', category: 'finance', icon: Target, keywords: ['savings goal', 'save money', 'goal calculator'], isNew: true, component: SavingsGoalCalculator, relatedSlugs: ['budget-tracker', 'loan-amortization'] },
+  { slug: 'grocery-list', name: 'Grocery List', shortDescription: 'Make a simple shopping list that saves itself.', description: 'Add, check off, and remove groceries. Your list stays private in this browser.', category: 'utility', icon: ListChecks, keywords: ['grocery list', 'shopping list', 'supermarket list'], isNew: true, component: GroceryList, relatedSlugs: ['quick-notes', 'recipe-scaler'] },
+  { slug: 'travel-budget-calculator', name: 'Travel Budget Calculator', shortDescription: 'Plan a realistic trip budget.', description: 'Estimate a travel budget from days, stay, food, transport, and other costs.', category: 'finance', icon: Globe, keywords: ['travel budget', 'trip planner', 'vacation cost'], isNew: true, component: TravelBudgetCalculator, relatedSlugs: ['fuel-cost-calculator', 'savings-goal-calculator'] },
+  { slug: 'pet-age-calculator', name: 'Pet Age Calculator', shortDescription: 'Estimate dog or cat age in human years.', description: 'Use a simple life-stage estimate for cats and dogs.', category: 'utility', icon: SmilePlus, keywords: ['pet age', 'dog years', 'cat years'], isNew: true, component: PetAgeCalculator, relatedSlugs: ['age-calculator'] },
 ];
 
 export function getTool(slug: string) {
