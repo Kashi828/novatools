@@ -1,6 +1,7 @@
-import type { ReactNode } from 'react';
+'use client';
+
+import { useEffect, useState, type ReactNode } from 'react';
 import { Protect } from '@clerk/nextjs';
-import { PROMO_MODE } from '@/lib/promo';
 
 interface PremiumGateProps {
   children: ReactNode;
@@ -8,15 +9,20 @@ interface PremiumGateProps {
 }
 
 /**
- * Drop-in replacement for <Protect plan="premium">. During PROMO_MODE it renders
- * children directly for everyone, bypassing the plan check entirely — so every
- * Premium tool automatically un-gates without touching each tool's own code.
+ * Uses the admin-controlled promo setting at runtime. If settings cannot load,
+ * the normal Clerk plan check remains in place so premium features stay protected.
  */
 export function PremiumGate({ children, fallback }: PremiumGateProps) {
-  if (PROMO_MODE) return <>{children}</>;
-  return (
-    <Protect plan="premium" fallback={fallback}>
-      {children}
-    </Protect>
-  );
+  const [promoEnabled, setPromoEnabled] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/site-settings')
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => setPromoEnabled(data?.promoEnabled === true))
+      .catch(() => undefined);
+  }, []);
+
+  if (promoEnabled) return <>{children}</>;
+
+  return <Protect plan="premium" fallback={fallback}>{children}</Protect>;
 }
