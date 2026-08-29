@@ -123,7 +123,7 @@ export function HtmlEntityTool() {
     const node = document.createElement('textarea'); node.innerHTML = text; return node.value;
   }, [text, mode]);
   return <ToolShell outputValue={output} onReset={() => setText('')} shareSlug="html-entity-encoder-decoder">
-    <div className="flex gap-2"><Button size="sm" variant={mode === 'encode' ? 'default' : 'outline'} onClick={() => setMode('encode')}>Encode</Button><Button size="sm" variant={mode === 'decode' ? 'default' : 'outline'} onClick={() => setMode('decode')}>Decode</Button></div>
+    <div className="flex gap-2"><Button size="sm" variant={mode === 'encode' ? 'primary' : 'outline'} onClick={() => setMode('encode')}>Encode</Button><Button size="sm" variant={mode === 'decode' ? 'primary' : 'outline'} onClick={() => setMode('decode')}>Decode</Button></div>
     <div className="grid gap-3 sm:grid-cols-2"><textarea value={text} onChange={(e) => setText(e.target.value)} rows={10} placeholder="Paste text or HTML entities..." className={fieldClass} /><textarea value={output} readOnly rows={10} className={fieldClass} /></div>
   </ToolShell>;
 }
@@ -140,7 +140,7 @@ export function BinaryTextConverter() {
     } catch { return 'Could not convert this value.'; }
   }, [text, mode]);
   return <ToolShell outputValue={output} onReset={() => setText('')} shareSlug="binary-text-converter">
-    <div className="flex gap-2"><Button size="sm" variant={mode === 'toBinary' ? 'default' : 'outline'} onClick={() => setMode('toBinary')}>Text → Binary</Button><Button size="sm" variant={mode === 'toText' ? 'default' : 'outline'} onClick={() => setMode('toText')}>Binary → Text</Button></div>
+    <div className="flex gap-2"><Button size="sm" variant={mode === 'toBinary' ? 'primary' : 'outline'} onClick={() => setMode('toBinary')}>Text → Binary</Button><Button size="sm" variant={mode === 'toText' ? 'primary' : 'outline'} onClick={() => setMode('toText')}>Binary → Text</Button></div>
     <div className="grid gap-3 sm:grid-cols-2"><textarea value={text} onChange={(e) => setText(e.target.value)} rows={10} placeholder={mode === 'toBinary' ? 'Type text...' : '01001000 01101001'} className={fieldClass} /><textarea value={output} readOnly rows={10} className={fieldClass} /></div>
   </ToolShell>;
 }
