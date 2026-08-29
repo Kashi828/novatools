@@ -4,6 +4,9 @@ import { categories, getCategory } from '@/data/categories';
 import { getToolsByCategory } from '@/data/tools';
 import { ToolCard } from '@/components/tool-card';
 import { StaggerGrid, StaggerItem } from '@/components/stagger-grid';
+import { getHiddenSlugs } from '@/lib/tool-visibility';
+
+export const dynamic = 'force-dynamic';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -28,6 +31,8 @@ export default async function CategoryPage({ params }: Props) {
   const category = getCategory(slug);
   if (!category) return notFound();
   const categoryTools = getToolsByCategory(category.slug);
+  const hiddenSlugs = new Set(await getHiddenSlugs());
+  const visibleTools = categoryTools.filter((t) => !hiddenSlugs.has(t.slug));
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -42,10 +47,10 @@ export default async function CategoryPage({ params }: Props) {
       </div>
 
       <StaggerGrid className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {categoryTools.map((tool) => (
+        {visibleTools.map((tool) => (
           <StaggerItem key={tool.slug}><ToolCard tool={tool} /></StaggerItem>
         ))}
-        {categoryTools.length === 0 && (
+        {visibleTools.length === 0 && (
           <div className="col-span-full rounded-xl2 border border-dashed border-black/15 p-10 text-center text-black/50 dark:border-white/15 dark:text-white/50">
             Tools in this category are on the way.
           </div>

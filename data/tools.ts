@@ -75,6 +75,14 @@ import {
   Target,
   AlarmClock,
   FlaskConical,
+  Receipt as ReceiptIcon,
+  TrendingUp,
+  ListChecks,
+  Timer as TimerIcon,
+  Contact,
+  Wallet,
+  Eye as EyeIcon,
+  FileText as FileTextIcon,
 } from 'lucide-react';
 import type { ToolDefinition } from './types';
 import { PasswordGenerator } from '@/components/tools/password-generator';
@@ -159,6 +167,14 @@ import { ReadingSpeedTracker } from '@/components/tools/reading-speed-tracker';
 import { WordGoalTracker } from '@/components/tools/word-goal-tracker';
 import { ExamCountdownPlanner } from '@/components/tools/exam-countdown-planner';
 import { PeriodicTable } from '@/components/tools/periodic-table';
+import { InvoiceGenerator } from '@/components/tools/invoice-generator';
+import { LoanAmortization } from '@/components/tools/loan-amortization';
+import { HabitTracker } from '@/components/tools/habit-tracker';
+import { MeetingCostCalculator } from '@/components/tools/meeting-cost-calculator';
+import { VcardQrGenerator } from '@/components/tools/vcard-qr-generator';
+import { BudgetTracker } from '@/components/tools/budget-tracker';
+import { ColorBlindnessSimulator } from '@/components/tools/color-blindness-simulator';
+import { ReadabilityChecker } from '@/components/tools/readability-checker';
 
 export const tools: ToolDefinition[] = [
   {
@@ -1134,6 +1150,103 @@ export const tools: ToolDefinition[] = [
     isNew: true,
     component: PeriodicTable,
     relatedSlugs: ['gpa-calculator'],
+  },
+  {
+    slug: 'invoice-generator',
+    name: 'Invoice Generator',
+    shortDescription: 'Create a simple itemized invoice.',
+    description: 'Build a professional invoice with line items, tax, and totals \u2014 download it as text or copy it directly.',
+    category: 'finance',
+    icon: ReceiptIcon,
+    keywords: ['invoice generator', 'billing', 'itemized invoice'],
+    isNew: true,
+    trending: true,
+    component: InvoiceGenerator,
+    relatedSlugs: ['gst-calculator'],
+  },
+  {
+    slug: 'loan-amortization',
+    name: 'Loan Amortization Schedule',
+    shortDescription: 'See a full year-by-year loan payoff breakdown.',
+    description: 'Get a detailed year-by-year amortization schedule for any loan, showing principal, interest, and remaining balance.',
+    category: 'finance',
+    icon: TrendingUp,
+    keywords: ['amortization schedule', 'loan schedule', 'mortgage calculator'],
+    isNew: true,
+    component: LoanAmortization,
+    relatedSlugs: ['emi-calculator'],
+  },
+  {
+    slug: 'habit-tracker',
+    name: 'Habit Tracker',
+    shortDescription: 'Track daily habits on a 30-day grid.',
+    description: 'Add habits and check them off day by day on a rolling 30-day grid, saved automatically in your browser.',
+    category: 'utility',
+    icon: ListChecks,
+    keywords: ['habit tracker', 'daily habits', 'streak tracker'],
+    isNew: true,
+    component: HabitTracker,
+    relatedSlugs: ['quick-notes'],
+  },
+  {
+    slug: 'meeting-cost-calculator',
+    name: 'Meeting Cost Calculator',
+    shortDescription: 'See what a meeting is costing in real time.',
+    description: 'Start a live timer to see exactly how much a meeting is costing based on attendee count and average salary.',
+    category: 'finance',
+    icon: TimerIcon,
+    keywords: ['meeting cost', 'meeting calculator', 'cost of meetings'],
+    isNew: true,
+    component: MeetingCostCalculator,
+    relatedSlugs: ['tip-calculator'],
+  },
+  {
+    slug: 'vcard-qr-generator',
+    name: 'vCard QR Generator',
+    shortDescription: 'Generate a QR code that saves a contact.',
+    description: 'Create a QR code that, when scanned, saves a contact directly to someone\u2019s phone \u2014 great for business cards.',
+    category: 'web',
+    icon: Contact,
+    keywords: ['vcard qr code', 'contact qr code', 'business card qr'],
+    isNew: true,
+    component: VcardQrGenerator,
+    relatedSlugs: ['qr-generator'],
+  },
+  {
+    slug: 'budget-tracker',
+    name: 'Budget Tracker',
+    shortDescription: 'Track income and expenses.',
+    description: 'Log income and expenses to see your running balance, saved automatically in your browser.',
+    category: 'finance',
+    icon: Wallet,
+    keywords: ['budget tracker', 'income and expenses', 'personal finance'],
+    isNew: true,
+    component: BudgetTracker,
+    relatedSlugs: ['loan-amortization'],
+  },
+  {
+    slug: 'color-blindness-simulator',
+    name: 'Color Blindness Simulator',
+    shortDescription: 'See how an image looks with color vision deficiency.',
+    description: 'Upload an image to see how it appears under protanopia, deuteranopia, and tritanopia color vision deficiencies.',
+    category: 'color',
+    icon: EyeIcon,
+    keywords: ['color blindness simulator', 'color vision deficiency', 'accessibility'],
+    isNew: true,
+    component: ColorBlindnessSimulator,
+    relatedSlugs: ['color-contrast-checker'],
+  },
+  {
+    slug: 'readability-checker',
+    name: 'Readability Checker',
+    shortDescription: 'Score how easy text is to read.',
+    description: 'Analyze text with the Flesch Reading Ease formula to see how easy or difficult it is to read.',
+    category: 'text',
+    icon: FileTextIcon,
+    keywords: ['readability checker', 'flesch reading ease', 'reading level'],
+    isNew: true,
+    component: ReadabilityChecker,
+    relatedSlugs: ['word-counter'],
   },
 ];
 

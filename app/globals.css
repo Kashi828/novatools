@@ -114,6 +114,38 @@
     --logo-grad-3: #6E6E6E;
   }
 
+  /* Font pairings — switched via [data-font] on <html>, all four are preloaded in
+     layout.tsx so switching is instant with no network request. */
+  :root,
+  [data-font='elegant'] {
+    --font-heading-active: var(--font-playfair);
+    --font-body-active: var(--font-inter);
+  }
+  [data-font='modern'] {
+    --font-heading-active: var(--font-space-grotesk-alt);
+    --font-body-active: var(--font-inter);
+  }
+  [data-font='classic'] {
+    --font-heading-active: var(--font-merriweather);
+    --font-body-active: var(--font-inter);
+  }
+  [data-font='rounded'] {
+    --font-heading-active: var(--font-poppins);
+    --font-body-active: var(--font-inter);
+  }
+
+  /* Corner roundness — switched via [data-radius] on <html>. */
+  :root,
+  [data-radius='rounded'] {
+    --radius-xl2: 1.25rem;
+  }
+  [data-radius='sharp'] {
+    --radius-xl2: 0.375rem;
+  }
+  [data-radius='pill'] {
+    --radius-xl2: 2rem;
+  }
+
   * {
     @apply border-black/10;
   }

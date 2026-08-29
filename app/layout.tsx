@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Inter } from 'next/font/google';
+import { Playfair_Display, Space_Grotesk, Merriweather, Poppins, Inter } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -10,18 +10,14 @@ import { PromoBanner } from '@/components/promo-banner';
 import { ToastProvider } from '@/components/toast-provider';
 import { PageTransition } from '@/components/page-transition';
 
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['500', '600', '700', '800'],
-  variable: '--font-space-grotesk',
-  display: 'swap',
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
+// All four heading font candidates are preloaded here; which one is "active" is
+// switched purely via CSS custom properties (see globals.css [data-font]), the same
+// technique used for the color themes. No runtime Google Fonts loading needed.
+const playfair = Playfair_Display({ subsets: ['latin'], weight: ['500', '600', '700', '800'], variable: '--font-playfair', display: 'swap' });
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-space-grotesk-alt', display: 'swap' });
+const merriweather = Merriweather({ subsets: ['latin'], weight: ['700', '900'], variable: '--font-merriweather', display: 'swap' });
+const poppins = Poppins({ subsets: ['latin'], weight: ['500', '600', '700', '800'], variable: '--font-poppins', display: 'swap' });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 
 const SITE_URL = 'https://novatools.app';
 
@@ -52,13 +48,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const fontVars = `${playfair.variable} ${spaceGrotesk.variable} ${merriweather.variable} ${poppins.variable} ${inter.variable}`;
   return (
     <ClerkProvider
       appearance={{
         variables: { colorPrimary: '#C9A961' },
       }}
     >
-      <html lang="en" className={`${playfair.variable} ${inter.variable}`} suppressHydrationWarning>
+      <html lang="en" className={fontVars} suppressHydrationWarning>
         <body className="flex min-h-screen flex-col bg-noise">
           <ThemeProvider>
             <ToastProvider>

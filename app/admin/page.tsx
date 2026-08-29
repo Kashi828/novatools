@@ -4,9 +4,9 @@ import { ShieldAlert, MessageSquare, Wrench, ExternalLink } from 'lucide-react';
 import { isAdminUser } from '@/lib/admin';
 import { listComments } from '@/lib/comments';
 import { tools } from '@/data/tools';
-import { categories } from '@/data/categories';
 import { PROMO_MODE } from '@/lib/promo';
 import { AdminCommentsPanel } from '@/components/admin-comments-panel';
+import { AdminToolsPanel } from '@/components/admin-tools-panel';
 
 export const metadata: Metadata = {
   title: 'Admin',
@@ -30,10 +30,6 @@ export default async function AdminPage() {
   }
 
   const comments = await listComments();
-  const toolsByCategory = categories.map((c) => ({
-    ...c,
-    count: tools.filter((t) => t.category === c.slug).length,
-  }));
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
@@ -59,16 +55,9 @@ export default async function AdminPage() {
 
       <div className="mt-10">
         <h2 className="mb-3 flex items-center gap-2 font-heading text-lg font-semibold">
-          <Wrench className="h-4 w-4" /> Tools by category
+          <Wrench className="h-4 w-4" /> Manage tools — click to hide/show from the public site
         </h2>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {toolsByCategory.map((c) => (
-            <div key={c.slug} className="rounded-lg border border-black/10 bg-black/[0.02] px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5">
-              <span className="text-black/60 dark:text-white/60">{c.name}</span>
-              <span className="ml-2 font-semibold">{c.count}</span>
-            </div>
-          ))}
-        </div>
+        <AdminToolsPanel />
       </div>
 
       <div className="mt-10">

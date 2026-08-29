@@ -6,10 +6,13 @@ import { Command } from 'cmdk';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { tools } from '@/data/tools';
+import { useHiddenTools } from '@/lib/use-hidden-tools';
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const hiddenSlugs = useHiddenTools();
+  const visibleTools = tools.filter((t) => !hiddenSlugs.has(t.slug));
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -55,7 +58,7 @@ export function CommandPalette() {
               </div>
               <Command.List className="max-h-80 overflow-y-auto p-2">
                 <Command.Empty className="p-4 text-center text-sm text-black/50 dark:text-white/50">No tools found.</Command.Empty>
-                {tools.map((tool) => (
+                {visibleTools.map((tool) => (
                   <Command.Item
                     key={tool.slug}
                     value={`${tool.name} ${tool.keywords.join(' ')}`}

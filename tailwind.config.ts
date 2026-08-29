@@ -43,8 +43,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        heading: ['var(--font-space-grotesk)', 'serif'],
-        body: ['var(--font-inter)', 'sans-serif'],
+        heading: ['var(--font-heading-active)', 'serif'],
+        body: ['var(--font-body-active)', 'sans-serif'],
       },
       backgroundImage: {
         'gradient-brand':
@@ -57,7 +57,7 @@ const config: Config = {
         glass: '0 8px 32px rgba(0,0,0,0.12)',
       },
       borderRadius: {
-        xl2: '1.25rem',
+        xl2: 'var(--radius-xl2, 1.25rem)',
       },
       keyframes: {
         float: {

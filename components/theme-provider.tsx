@@ -5,6 +5,8 @@ import { derivePrimaryRamp, deriveSecondaryRamp, deriveAccentRamp } from '@/lib/
 
 type Theme = 'light' | 'dark';
 export type ColorTheme = 'gold' | 'emerald' | 'sapphire' | 'rose' | 'monochrome' | 'custom';
+export type FontPairing = 'elegant' | 'modern' | 'classic' | 'rounded';
+export type RadiusStyle = 'sharp' | 'rounded' | 'pill';
 
 export interface CustomColors {
   primary: string;
@@ -19,6 +21,10 @@ interface ThemeContextValue {
   setColorTheme: (t: ColorTheme) => void;
   customColors: CustomColors;
   setCustomColors: (c: CustomColors) => void;
+  fontPairing: FontPairing;
+  setFontPairing: (f: FontPairing) => void;
+  radiusStyle: RadiusStyle;
+  setRadiusStyle: (r: RadiusStyle) => void;
 }
 
 const DEFAULT_CUSTOM: CustomColors = { primary: '#C9A961', secondary: '#A97142', accent: '#6B7280' };
@@ -65,6 +71,25 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark');
   const [colorTheme, setColorThemeState] = useState<ColorTheme>('gold');
   const [customColors, setCustomColorsState] = useState<CustomColors>(DEFAULT_CUSTOM);
+  const [fontPairing, setFontPairingState] = useState<FontPairing>('elegant');
+  const [radiusStyle, setRadiusStyleState] = useState<RadiusStyle>('rounded');
+
+  useEffect(() => {
+    const storedFont = window.localStorage.getItem('novatools-font') as FontPairing | null;
+    if (storedFont) setFontPairingState(storedFont);
+    const storedRadius = window.localStorage.getItem('novatools-radius') as RadiusStyle | null;
+    if (storedRadius) setRadiusStyleState(storedRadius);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-font', fontPairing);
+    window.localStorage.setItem('novatools-font', fontPairing);
+  }, [fontPairing]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-radius', radiusStyle);
+    window.localStorage.setItem('novatools-radius', radiusStyle);
+  }, [radiusStyle]);
 
   useEffect(() => {
     const storedTheme = window.localStorage.getItem('novatools-theme') as Theme | null;
@@ -119,6 +144,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         setColorTheme,
         customColors,
         setCustomColors,
+        fontPairing,
+        setFontPairing: setFontPairingState,
+        radiusStyle,
+        setRadiusStyle: setRadiusStyleState,
       }}
     >
       {children}

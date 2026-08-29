@@ -6,6 +6,9 @@ import { Reveal } from '@/components/reveal';
 import { StaggerGrid, StaggerItem } from '@/components/stagger-grid';
 import { categories } from '@/data/categories';
 import { getFeaturedTools, getNewTools, getTrendingTools, tools } from '@/data/tools';
+import { getHiddenSlugs } from '@/lib/tool-visibility';
+
+export const dynamic = 'force-dynamic';
 
 const STATS = [
   { value: '200+', label: 'Tools & counting' },
@@ -33,10 +36,11 @@ const FAQS = [
   { q: 'Can I use NovaTools on mobile?', a: 'Yes — every tool is fully responsive and works great on phones and tablets.' },
 ];
 
-export default function HomePage() {
-  const trending = getTrendingTools();
-  const featured = getFeaturedTools();
-  const newTools = getNewTools();
+export default async function HomePage() {
+  const hiddenSlugs = new Set(await getHiddenSlugs());
+  const trending = getTrendingTools().filter((t) => !hiddenSlugs.has(t.slug));
+  const featured = getFeaturedTools().filter((t) => !hiddenSlugs.has(t.slug));
+  const newTools = getNewTools().filter((t) => !hiddenSlugs.has(t.slug));
 
   return (
     <>
@@ -92,7 +96,7 @@ export default function HomePage() {
         <h2 className="mb-6 font-heading text-2xl font-bold sm:text-3xl">Browse by category</h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {categories.map((cat) => {
-            const count = tools.filter((t) => t.category === cat.slug).length;
+            const count = tools.filter((t) => t.category === cat.slug && !hiddenSlugs.has(t.slug)).length;
             return (
               <Link
                 key={cat.slug}

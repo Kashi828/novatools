@@ -8,16 +8,18 @@ import { StaggerGrid, StaggerItem } from '@/components/stagger-grid';
 import { categories } from '@/data/categories';
 import { searchTools } from '@/data/tools';
 import type { CategorySlug } from '@/data/types';
+import { useHiddenTools } from '@/lib/use-hidden-tools';
 
 export function ToolsExplorer() {
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') ?? '');
   const [activeCategory, setActiveCategory] = useState<CategorySlug | 'all'>('all');
+  const hiddenSlugs = useHiddenTools();
 
   const results = useMemo(() => {
-    const base = searchTools(query);
+    const base = searchTools(query).filter((t) => !hiddenSlugs.has(t.slug));
     return activeCategory === 'all' ? base : base.filter((t) => t.category === activeCategory);
-  }, [query, activeCategory]);
+  }, [query, activeCategory, hiddenSlugs]);
 
   return (
     <div className="mt-8">

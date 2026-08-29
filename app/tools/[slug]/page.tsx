@@ -7,6 +7,10 @@ import { getCategory } from '@/data/categories';
 import { Card, CardContent } from '@/components/ui/card';
 import { ToolCard } from '@/components/tool-card';
 
+import { getHiddenSlugs } from '@/lib/tool-visibility';
+
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: Promise<{ slug: string }>;
 }
@@ -32,11 +36,14 @@ export default async function ToolPage({ params }: Props) {
   const tool = getTool(slug);
   if (!tool) return notFound();
 
+  const hiddenSlugs = await getHiddenSlugs();
+  if (hiddenSlugs.includes(slug)) return notFound();
+
   const category = getCategory(tool.category);
   const ToolComponent = tool.component;
   const related = (tool.relatedSlugs ?? [])
     .map((s) => getTool(s))
-    .filter((t): t is NonNullable<typeof t> => Boolean(t));
+    .filter((t): t is NonNullable<typeof t> => Boolean(t) && !hiddenSlugs.includes(t!.slug));
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
