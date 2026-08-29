@@ -30,4 +30,9 @@
   .nova-title { color: transparent; background: linear-gradient(135deg, var(--logo-grad-1) 0%, var(--logo-grad-2) 48%, var(--logo-grad-3) 100%); background-clip: text; -webkit-background-clip: text; filter: drop-shadow(0 2px 1px rgb(var(--color-glow) / .25)) drop-shadow(0 3px 2px rgb(0 0 0 / .18)); }
 }
 
+html[data-ui-scale='compact'] { font-size: 14px; }
+html[data-ui-scale='comfortable'] { font-size: 16px; }
+html[data-ui-scale='large'] { font-size: 18px; }
+html[data-motion='reduced'] *, html[data-motion='reduced'] *::before, html[data-motion='reduced'] *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
