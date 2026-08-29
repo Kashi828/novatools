@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Palette, Check, Sliders } from 'lucide-react';
-import { useTheme, type ColorTheme, type FontPairing, type RadiusStyle } from '@/components/theme-provider';
+import { useTheme, type ColorTheme, type FontPairing, type RadiusStyle, type UiScale, type MotionPreference } from '@/components/theme-provider';
 
 const PRESETS: { key: ColorTheme; label: string; swatch: string }[] = [
   { key: 'gold', label: 'Gold', swatch: '#C9A961' },
@@ -19,6 +19,9 @@ const FONTS: { key: FontPairing; label: string }[] = [
   { key: 'rounded', label: 'Rounded (friendly)' },
 ];
 
+const SCALES: { key: UiScale; label: string }[] = [{ key: 'compact', label: 'Compact' }, { key: 'comfortable', label: 'Comfortable' }, { key: 'large', label: 'Large' }];
+const MOTION: { key: MotionPreference; label: string }[] = [{ key: 'full', label: 'Full motion' }, { key: 'reduced', label: 'Reduced motion' }];
+
 const RADII: { key: RadiusStyle; label: string }[] = [
   { key: 'sharp', label: 'Sharp' },
   { key: 'rounded', label: 'Rounded' },
@@ -26,7 +29,7 @@ const RADII: { key: RadiusStyle; label: string }[] = [
 ];
 
 export function ThemePicker() {
-  const { colorTheme, setColorTheme, customColors, setCustomColors, fontPairing, setFontPairing, radiusStyle, setRadiusStyle } = useTheme();
+  const { colorTheme, setColorTheme, customColors, setCustomColors, fontPairing, setFontPairing, radiusStyle, setRadiusStyle, uiScale, setUiScale, motionPreference, setMotionPreference } = useTheme();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -107,6 +110,9 @@ export function ThemePicker() {
             </button>
           ))}
 
+          <p className="mt-3 border-t border-black/10 px-2 pt-3 text-xs font-medium uppercase tracking-wide text-black/40 dark:border-white/10 dark:text-white/40">Reading size</p>
+          <div className="flex gap-1.5 px-2 py-1.5">{SCALES.map((s) => <button key={s.key} onClick={() => setUiScale(s.key)} className={`flex-1 rounded-lg border px-1 py-1.5 text-[11px] font-medium ${uiScale === s.key ? 'border-primary-400 bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400' : 'border-black/10 text-black/60 dark:border-white/10 dark:text-white/60'}`}>{s.label}</button>)}</div>
+          <div className="mt-1 flex gap-1.5 px-2 py-1.5">{MOTION.map((m) => <button key={m.key} onClick={() => setMotionPreference(m.key)} className={`flex-1 rounded-lg border px-1 py-1.5 text-[11px] font-medium ${motionPreference === m.key ? 'border-primary-400 bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400' : 'border-black/10 text-black/60 dark:border-white/10 dark:text-white/60'}`}>{m.label}</button>)}</div>
           <p className="mt-3 border-t border-black/10 px-2 pt-3 text-xs font-medium uppercase tracking-wide text-black/40 dark:border-white/10 dark:text-white/40">
             Corner style
           </p>
