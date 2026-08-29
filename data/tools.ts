@@ -1280,7 +1280,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Repeat text any number of times.',
     description: 'Duplicate text with your choice of newline, space, or no separator.',
     category: 'text',
-    icon: Repeat,
+    icon: ScrollText,
     keywords: ['text repeater', 'repeat text', 'duplicate text'],
     isNew: true,
     component: TextRepeater,
