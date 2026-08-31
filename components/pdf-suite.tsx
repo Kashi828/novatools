@@ -81,7 +81,7 @@ export function PdfSuite() {
       setTitle(loaded.getTitle() ?? '');
       setAuthor(loaded.getAuthor() ?? '');
       setSubject(loaded.getSubject() ?? '');
-      setKeywords((loaded.getKeywords() ?? []).join(', '));
+      setKeywords(loaded.getKeywords() ?? '');
     } catch {
       setDoc(null);
       setError('Could not open this PDF. It may be encrypted or corrupted.');
