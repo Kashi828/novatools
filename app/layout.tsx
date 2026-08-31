@@ -1,22 +1,15 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
 import { Playfair_Display, Space_Grotesk, Merriweather, Poppins, Inter } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
+import { CommandPaletteLoader } from '@/components/command-palette-loader';
 import { PromoBanner } from '@/components/promo-banner';
 import { SiteAnnouncement } from '@/components/site-announcement';
 import { ToastProvider } from '@/components/toast-provider';
 import { PageTransition } from '@/components/page-transition';
-
-// Load the command palette only when its client chunk is needed. Keeping it out
-// of the initial shell prevents its tool-registry imports from becoming global JS.
-const CommandPalette = dynamic(
-  () => import('@/components/command-palette').then((mod) => mod.CommandPalette),
-  { ssr: false }
-);
 
 // Keep the existing font choices/visuals while avoiding runtime Google Fonts requests.
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['500', '600', '700', '800'], variable: '--font-playfair', display: 'swap' });
@@ -68,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <SiteAnnouncement />
               <PromoBanner />
               <Navbar />
-              <CommandPalette />
+              <CommandPaletteLoader />
               <main className="flex-1">
                 <PageTransition>{children}</PageTransition>
               </main>
