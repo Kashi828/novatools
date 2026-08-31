@@ -62,7 +62,7 @@ export function ConverterSuite() {
   const units = useMemo(() => {
     if (mode === 'temperature') return [{ value: 'c', label: 'Celsius (°C)' }, { value: 'f', label: 'Fahrenheit (°F)' }, { value: 'k', label: 'Kelvin (K)' }];
     if (mode === 'fuel') return [{ value: 'l100', label: 'Liters / 100 km' }, { value: 'kmpl', label: 'Kilometers / liter' }, { value: 'mpg', label: 'Miles / gallon' }];
-    return Object.entries(CONFIGS[mode]).map(([key, item]) => ({ value: key, label: item.label }));
+    return Object.entries(CONFIGS[mode].units).map(([key, item]) => ({ value: key, label: item.label }));
   }, [mode]);
 
   const result = useMemo(() => {
@@ -76,10 +76,9 @@ export function ConverterSuite() {
 
   function changeMode(next: Mode) {
     setMode(next);
-    const first = next === 'temperature' ? 'c' : next === 'fuel' ? 'l100' : Object.keys(CONFIGS[next])[0];
-    const second = next === 'temperature' ? 'f' : next === 'fuel' ? 'kmpl' : Object.keys(CONFIGS[next])[1] ?? first;
-    setFrom(first);
-    setTo(second);
+    const keys = next === 'temperature' ? ['c', 'f'] : next === 'fuel' ? ['l100', 'kmpl'] : Object.keys(CONFIGS[next].units);
+    setFrom(keys[0]);
+    setTo(keys[1] ?? keys[0]);
     setValue('1');
   }
 
@@ -93,13 +92,10 @@ export function ConverterSuite() {
       <div className="flex flex-wrap gap-2">
         {MODES.map((item) => <Button key={item.key} size="sm" variant={mode === item.key ? 'primary' : 'outline'} onClick={() => changeMode(item.key)}>{item.label}</Button>)}
       </div>
+      <label className="block text-sm font-medium">Value<input type="number" value={value} onChange={(e) => setValue(e.target.value)} className={`mt-1 ${inputClass}`} /></label>
       <div className="grid gap-4 sm:grid-cols-[1fr_auto_1fr] sm:items-end">
-        <label className="block text-sm font-medium">Value<input type="number" value={value} onChange={(e) => setValue(e.target.value)} className={`mt-1 ${inputClass}`} /></label>
-        <Button variant="outline" className="w-full sm:w-auto" onClick={swap} aria-label="Swap units"><ArrowLeftRight className="h-4 w-4" /> Swap</Button>
-        <div />
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
         <label className="block text-sm font-medium">From<Select className="mt-1" value={from} onChange={setFrom} options={units} /></label>
+        <Button variant="outline" className="w-full sm:w-auto" onClick={swap} aria-label="Swap units"><ArrowLeftRight className="h-4 w-4" /> Swap</Button>
         <label className="block text-sm font-medium">To<Select className="mt-1" value={to} onChange={setTo} options={units} /></label>
       </div>
       <div className="rounded-xl2 border border-primary-400/30 bg-primary-50/40 p-6 text-center dark:bg-primary-500/5">
