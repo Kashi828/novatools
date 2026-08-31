@@ -74,7 +74,29 @@ function clearCustomColors() {
   ].forEach((prop) => root.style.removeProperty(prop));
 }
 
+function readStored<T>(key: string, fallback: T): T {
+  if (typeof window === 'undefined') return fallback;
+  const value = window.localStorage.getItem(key);
+  return value ? (value as T) : fallback;
+}
+
+function readStoredCustomColors(): CustomColors {
+  if (typeof window === 'undefined') return DEFAULT_CUSTOM_COLORS;
+  const value = window.localStorage.getItem('novatools-custom-colors');
+  if (!value) return DEFAULT_CUSTOM_COLORS;
+  try {
+    const parsed = JSON.parse(value) as Partial<CustomColors>;
+    if (typeof parsed.primary === 'string' && typeof parsed.secondary === 'string' && typeof parsed.accent === 'string') {
+      return { primary: parsed.primary, secondary: parsed.secondary, accent: parsed.accent };
+    }
+  } catch {
+    // Ignore malformed stored data.
+  }
+  return DEFAULT_CUSTOM_COLORS;
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [ready, setReady] = useState(false);
   const [theme, setTheme] = useState<Theme>('dark');
   const [colorTheme, setColorThemeState] = useState<ColorTheme>('gold');
   const [customColors, setCustomColorsState] = useState<CustomColors>(DEFAULT_CUSTOM_COLORS);
@@ -83,69 +105,75 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [uiScale, setUiScaleState] = useState<UiScale>('comfortable');
   const [motionPreference, setMotionPreferenceState] = useState<MotionPreference>('full');
 
+  // Restore every preference before any persistence effect is allowed to run.
   useEffect(() => {
-    const storedFont = window.localStorage.getItem('novatools-font') as FontPairing | null;
-    if (storedFont) setFontPairingState(storedFont);
-    const storedRadius = window.localStorage.getItem('novatools-radius') as RadiusStyle | null;
-    if (storedRadius) setRadiusStyleState(storedRadius);
-    const storedScale = window.localStorage.getItem('novatools-ui-scale') as UiScale | null;
-    if (storedScale) setUiScaleState(storedScale);
-    const storedMotion = window.localStorage.getItem('novatools-motion') as MotionPreference | null;
-    if (storedMotion) setMotionPreferenceState(storedMotion);
+    const storedTheme = readStored<Theme>('novatools-theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const storedColor = readStored<ColorTheme>('novatools-color-theme', 'gold');
+    const storedFont = readStored<FontPairing>('novatools-font', 'elegant');
+    const storedRadius = readStored<RadiusStyle>('novatools-radius', 'rounded');
+    const storedScale = readStored<UiScale>('novatools-ui-scale', 'comfortable');
+    const storedMotion = readStored<MotionPreference>('novatools-motion', 'full');
+    const storedCustom = readStoredCustomColors();
 
-    const storedTheme = window.localStorage.getItem('novatools-theme') as Theme | null;
-    if (storedTheme) setTheme(storedTheme);
+    setTheme(storedTheme);
+    setColorThemeState(storedColor);
+    setFontPairingState(storedFont);
+    setRadiusStyleState(storedRadius);
+    setUiScaleState(storedScale);
+    setMotionPreferenceState(storedMotion);
+    setCustomColorsState(storedCustom);
 
-    const storedColor = window.localStorage.getItem('novatools-color-theme') as ColorTheme | null;
-    if (storedColor) setColorThemeState(storedColor);
+    document.documentElement.classList.toggle('dark', storedTheme === 'dark');
+    document.documentElement.setAttribute('data-theme', storedColor === 'custom' ? 'gold' : storedColor);
+    document.documentElement.setAttribute('data-font', storedFont);
+    document.documentElement.setAttribute('data-radius', storedRadius);
+    document.documentElement.setAttribute('data-ui-scale', storedScale);
+    document.documentElement.setAttribute('data-motion', storedMotion);
+    if (storedColor === 'custom') applyCustomColors(storedCustom);
+    else clearCustomColors();
 
-    const storedCustom = window.localStorage.getItem('novatools-custom-colors');
-    if (storedCustom) {
-      try {
-        setCustomColorsState(JSON.parse(storedCustom));
-      } catch {
-        // Ignore malformed stored data.
-      }
-    }
+    setReady(true);
   }, []);
 
   useEffect(() => {
+    if (!ready) return;
     document.documentElement.setAttribute('data-font', fontPairing);
     window.localStorage.setItem('novatools-font', fontPairing);
-  }, [fontPairing]);
+  }, [fontPairing, ready]);
 
   useEffect(() => {
+    if (!ready) return;
     document.documentElement.setAttribute('data-radius', radiusStyle);
     window.localStorage.setItem('novatools-radius', radiusStyle);
-  }, [radiusStyle]);
+  }, [radiusStyle, ready]);
 
   useEffect(() => {
+    if (!ready) return;
     document.documentElement.setAttribute('data-ui-scale', uiScale);
     window.localStorage.setItem('novatools-ui-scale', uiScale);
-  }, [uiScale]);
+  }, [uiScale, ready]);
 
   useEffect(() => {
+    if (!ready) return;
     document.documentElement.setAttribute('data-motion', motionPreference);
     window.localStorage.setItem('novatools-motion', motionPreference);
-  }, [motionPreference]);
+  }, [motionPreference, ready]);
 
   useEffect(() => {
+    if (!ready) return;
     document.documentElement.classList.toggle('dark', theme === 'dark');
     window.localStorage.setItem('novatools-theme', theme);
-  }, [theme]);
+  }, [theme, ready]);
 
   useEffect(() => {
+    if (!ready) return;
     document.documentElement.setAttribute('data-theme', colorTheme === 'custom' ? 'gold' : colorTheme);
     window.localStorage.setItem('novatools-color-theme', colorTheme);
-    if (colorTheme === 'custom') {
-      applyCustomColors(customColors);
-    } else {
-      clearCustomColors();
-    }
-  }, [colorTheme, customColors]);
+    if (colorTheme === 'custom') applyCustomColors(customColors);
+    else clearCustomColors();
+  }, [colorTheme, customColors, ready]);
 
   function setColorTheme(t: ColorTheme) {
-    // Persist and update the DOM immediately so navigation cannot race the effect.
     window.localStorage.setItem('novatools-color-theme', t);
     document.documentElement.setAttribute('data-theme', t === 'custom' ? 'gold' : t);
     if (t === 'custom') applyCustomColors(customColors);
@@ -167,6 +195,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       return next;
     });
   }
+
+  if (!ready) return null;
 
   return (
     <ThemeContext.Provider
