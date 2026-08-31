@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ShieldAlert, MessageSquare, Wrench, UsersRound } from 'lucide-react';
+import { ShieldAlert, MessageSquare, Wrench, UsersRound, SlidersHorizontal } from 'lucide-react';
 import { isAdminUser } from '@/lib/admin';
 import { listComments } from '@/lib/comments';
 import { tools } from '@/data/tools';
@@ -8,6 +8,7 @@ import { getSiteSettings } from '@/lib/site-settings';
 import { AdminCommentsPanel } from '@/components/admin-comments-panel';
 import { AdminToolsPanel } from '@/components/admin-tools-panel';
 import { AdminPromoPanel } from '@/components/admin-promo-panel';
+import { AdminOperationsPanel } from '@/components/admin-operations-panel';
 
 export const metadata: Metadata = {
   title: 'Admin',
@@ -43,6 +44,12 @@ export default async function AdminPage() {
       </div>
 
       <div className="mt-10"><AdminPromoPanel /></div>
+
+      <div className="mt-10">
+        <h2 className="mb-3 flex items-center gap-2 font-heading text-lg font-semibold"><SlidersHorizontal className="h-4 w-4" /> Advanced catalogue operations</h2>
+        <p className="mb-4 text-sm text-black/60 dark:text-white/60">Search the full registry, filter by category or status, bulk show/hide matching tools, refresh visibility state, and export the catalogue for backup or planning.</p>
+        <AdminOperationsPanel />
+      </div>
 
       <div className="mt-10">
         <h2 className="mb-3 flex items-center gap-2 font-heading text-lg font-semibold"><Wrench className="h-4 w-4" /> Tool catalogue</h2>
