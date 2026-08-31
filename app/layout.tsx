@@ -3,6 +3,7 @@ import { Playfair_Display, Space_Grotesk, Merriweather, Poppins, Inter } from 'n
 import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeFavicon } from '@/components/theme-favicon';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { CommandPaletteLoader } from '@/components/command-palette-loader';
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en" className={fontVars} suppressHydrationWarning>
         <body className="flex min-h-screen flex-col bg-noise">
           <ThemeProvider>
+            <ThemeFavicon />
             <ToastProvider>
               <SiteAnnouncement />
               <PromoBanner />
