@@ -55,26 +55,26 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const scale = cookieStore.get('novatools-ui-scale')?.value;
   const motion = cookieStore.get('novatools-motion')?.value;
 
-  let customStyle: Record<string, string> = {};
+  const customStyle: Record<string, string> = {};
   if (savedColorTheme === 'custom' && savedCustomRaw) {
     try {
       const custom = JSON.parse(decodeURIComponent(savedCustomRaw)) as { primary: string; secondary: string; accent: string };
       const primary = derivePrimaryRamp(custom.primary);
       const secondary = deriveSecondaryRamp(custom.secondary);
       const accent = deriveAccentRamp(custom.accent);
-      customStyle = {
+      Object.assign(customStyle, {
         '--color-primary-50': primary[50], '--color-primary-100': primary[100], '--color-primary-400': primary[400], '--color-primary-500': primary[500], '--color-primary-600': primary[600], '--color-primary-700': primary[700],
         '--color-secondary-400': secondary[400], '--color-secondary-500': secondary[500], '--color-secondary-600': secondary[600],
         '--color-accent-400': accent[400], '--color-accent-500': accent[500], '--color-grad-1': primary[400], '--color-grad-2': primary[500], '--color-grad-3': secondary[500], '--color-glow': primary[500],
         '--logo-grad-1': custom.primary, '--logo-grad-2': custom.primary, '--logo-grad-3': custom.secondary,
-      };
+      });
     } catch {}
   }
 
   const fontVars = `${playfair.variable} ${spaceGrotesk.variable} ${merriweather.variable} ${poppins.variable} ${inter.variable}`;
   return (
     <ClerkProvider appearance={{ variables: { colorPrimary: '#C9A961' } }}>
-      <html lang="en" className={`${fontVars}${savedTheme === 'dark' ? ' dark' : ''}`} data-theme={savedColorTheme === 'custom' ? 'gold' : (savedColorTheme || 'gold')} data-font={font || undefined} data-radius={radius || undefined} data-ui-scale={scale || undefined} data-motion={motion || undefined} suppressHydrationWarning>
+      <html lang="en" className={`${fontVars}${savedTheme === 'dark' ? ' dark' : ''}`} data-theme={savedColorTheme === 'custom' ? 'gold' : (savedColorTheme || 'gold')} data-font={font || undefined} data-radius={radius || undefined} data-ui-scale={scale || undefined} data-motion={motion || undefined} style={customStyle as React.CSSProperties} suppressHydrationWarning>
         <body className="flex min-h-screen flex-col bg-noise">
           <script dangerouslySetInnerHTML={{ __html: appearanceBootstrap }} />
           <ThemeProvider>
