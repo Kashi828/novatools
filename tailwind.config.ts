@@ -49,15 +49,31 @@ const config: Config = {
       backgroundImage: {
         'gradient-brand':
           'linear-gradient(135deg, rgb(var(--color-grad-1)) 0%, rgb(var(--color-grad-2)) 50%, rgb(var(--color-grad-3)) 100%)',
+        'gradient-premium':
+          'linear-gradient(135deg, rgb(var(--color-primary-400)) 0%, rgb(var(--color-primary-600)) 55%, rgb(var(--color-secondary-600)) 100%)',
         'gradient-radial-glow':
           'radial-gradient(circle at 50% 0%, rgb(var(--color-glow) / 0.12), transparent 60%)',
       },
       boxShadow: {
         glow: '0 0 40px -10px rgb(var(--color-glow) / 0.35)',
+        'glow-gold': '0 2px 12px -2px rgb(var(--color-glow) / 0.55)',
         glass: '0 8px 32px rgba(0,0,0,0.12)',
       },
+      // The whole radius scale reads from CSS variables so the "Corner style"
+      // preference rescales every step proportionally. Each utility keeps its
+      // relative size instead of being flattened to one blanket value, which is
+      // what previously made text collide with over-rounded corners.
       borderRadius: {
+        none: '0px',
+        sm: 'var(--radius-sm, 0.125rem)',
+        DEFAULT: 'var(--radius-base, 0.25rem)',
+        md: 'var(--radius-md, 0.375rem)',
+        lg: 'var(--radius-lg, 0.5rem)',
+        xl: 'var(--radius-xl, 0.75rem)',
+        '2xl': 'var(--radius-2xl, 1rem)',
+        '3xl': 'var(--radius-3xl, 1.5rem)',
         xl2: 'var(--radius-xl2, 1.25rem)',
+        full: '9999px',
       },
       keyframes: {
         float: {

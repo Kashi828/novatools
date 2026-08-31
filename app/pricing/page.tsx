@@ -12,7 +12,7 @@ export default function PricingPage() {
       <div className="text-center">
         <h1 className="font-heading text-3xl font-bold sm:text-4xl">Simple, honest pricing</h1>
         <p className="mx-auto mt-3 max-w-xl text-black/60 dark:text-white/60">
-          Every core tool works free, forever, with no signup required. A free account unlocks a handful of bonus tools and removes a few limits — there's no charge for it.
+          Every core tool works free, forever, with no signup required. A free account unlocks a handful of bonus tools and removes a few limits — there&apos;s no charge for it.
         </p>
       </div>
 

@@ -64,8 +64,8 @@ function QrBatchGeneratorInner() {
       {results.length > 0 && (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {results.map((r, i) => (
-            // eslint-disable-next-line @next/next/no-img-element
             <div key={i} className="space-y-1 text-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={r.dataUrl} alt={r.text} className="w-full rounded-lg bg-white p-1" />
               <p className="truncate text-xs text-black/50 dark:text-white/50">{r.text}</p>
             </div>

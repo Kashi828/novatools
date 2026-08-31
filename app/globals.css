@@ -12,9 +12,23 @@
   [data-font='modern'] { --font-heading-active: var(--font-space-grotesk-alt); --font-body-active: var(--font-inter); }
   [data-font='classic'] { --font-heading-active: var(--font-merriweather); --font-body-active: var(--font-inter); }
   [data-font='rounded'] { --font-heading-active: var(--font-poppins); --font-body-active: var(--font-inter); }
-  :root, [data-radius='rounded'] { --radius-xl2: 1.25rem; }
-  [data-radius='sharp'] { --radius-xl2: .375rem; }
-  [data-radius='pill'] { --radius-xl2: 2rem; }
+  /* Corner style: one variable per step of the Tailwind radius scale, so the
+     preference rescales corners proportionally instead of forcing a single
+     radius onto every element. `rounded-full` stays a true circle in all three
+     styles — dots, avatars and chips depend on it. */
+  :root,
+  [data-radius='rounded'] {
+    --radius-sm: .125rem; --radius-base: .25rem; --radius-md: .375rem; --radius-lg: .5rem;
+    --radius-xl: .75rem; --radius-2xl: 1rem; --radius-3xl: 1.5rem; --radius-xl2: 1.25rem;
+  }
+  [data-radius='sharp'] {
+    --radius-sm: 0rem; --radius-base: .0625rem; --radius-md: .125rem; --radius-lg: .1875rem;
+    --radius-xl: .25rem; --radius-2xl: .3125rem; --radius-3xl: .375rem; --radius-xl2: .3125rem;
+  }
+  [data-radius='pill'] {
+    --radius-sm: .375rem; --radius-base: .5rem; --radius-md: .625rem; --radius-lg: .875rem;
+    --radius-xl: 1.25rem; --radius-2xl: 1.5rem; --radius-3xl: 1.75rem; --radius-xl2: 1.75rem;
+  }
   * { @apply border-black/10; }
   html { scroll-behavior: smooth; color-scheme: light; }
   html.dark { color-scheme: dark; }
@@ -28,12 +42,27 @@
   .bg-noise { background-image: radial-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px); background-size: 24px 24px; }
   .animate-gradient-bg { background-size: 200% 200%; @apply animate-gradient-x; }
   .nova-title { color: transparent; background: linear-gradient(135deg, var(--logo-grad-1) 0%, var(--logo-grad-2) 48%, var(--logo-grad-3) 100%); background-clip: text; -webkit-background-clip: text; filter: drop-shadow(0 2px 1px rgb(var(--color-glow) / .25)) drop-shadow(0 3px 2px rgb(0 0 0 / .18)); }
+
+  /* Diagonal light sweep on hover, used by the tool cards. */
+  .shine-sweep { position: relative; overflow: hidden; isolation: isolate; }
+  .shine-sweep::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / .35) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform .75s ease;
+  }
+  .group:hover .shine-sweep::after, .shine-sweep:hover::after { transform: translateX(120%); }
+  .dark .shine-sweep::after { background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / .1) 50%, transparent 65%); }
+  html[data-motion='reduced'] .shine-sweep::after { display: none; }
 }
 
-/* Apply the chosen corner language to every interactive surface, including the header. */
-html[data-radius='sharp'] [class*='rounded'] { border-radius: .375rem !important; }
-html[data-radius='rounded'] [class*='rounded'] { border-radius: 1rem; }
-html[data-radius='pill'] [class*='rounded'] { border-radius: 9999px !important; }
+/* Controls with a fixed one-line height are always safe to render as true pills. */
+html[data-radius='pill'] :is(.h-8, .h-9, .h-10, .h-11, .h-12)[class*='rounded'] { border-radius: 9999px; }
 
 html[data-ui-scale='compact'] { font-size: 14px; }
 html[data-ui-scale='comfortable'] { font-size: 16px; }
