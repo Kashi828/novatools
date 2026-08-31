@@ -26,11 +26,6 @@ export default function AboutPage() {
       <div className="mt-12 grid gap-5 sm:grid-cols-3">
         {principles.map((principle) => <div key={principle.title} className="rounded-xl2 border border-black/5 bg-white/70 p-6 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-white/5"><principle.icon className="mb-4 h-7 w-7 text-primary-500" /><h2 className="font-heading text-lg font-semibold">{principle.title}</h2><p className="mt-2 text-sm leading-6 text-black/60 dark:text-white/60">{principle.desc}</p></div>)}
       </div>
-
-      <section className="mt-14 rounded-xl2 border border-primary-400/25 bg-primary-50/40 p-7 dark:bg-primary-500/5">
-        <h2 className="font-heading text-xl font-semibold">What we are building next</h2>
-        <p className="mt-2 text-sm leading-6 text-black/65 dark:text-white/65">A deeper catalogue, better personalisation, and a more capable in-site admin workspace—so NovaTools can grow without losing its speed or simplicity.</p>
-      </section>
     </div>
   );
 }
