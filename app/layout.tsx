@@ -12,6 +12,29 @@ import { SiteAnnouncement } from '@/components/site-announcement';
 import { ToastProvider } from '@/components/toast-provider';
 import { PageTransition } from '@/components/page-transition';
 
+// Restore the saved appearance before React paints the page. This prevents the
+// default gold theme from flashing back in after refresh/navigation.
+const appearanceBootstrap = `(() => {
+  try {
+    const root = document.documentElement;
+    const colorTheme = localStorage.getItem('novatools-color-theme');
+    const theme = localStorage.getItem('novatools-theme');
+    const font = localStorage.getItem('novatools-font');
+    const radius = localStorage.getItem('novatools-radius');
+    const scale = localStorage.getItem('novatools-ui-scale');
+    const motion = localStorage.getItem('novatools-motion');
+
+    if (colorTheme) root.setAttribute('data-theme', colorTheme === 'custom' ? 'gold' : colorTheme);
+    if (theme) root.classList.toggle('dark', theme === 'dark');
+    if (font) root.setAttribute('data-font', font);
+    if (radius) root.setAttribute('data-radius', radius);
+    if (scale) root.setAttribute('data-ui-scale', scale);
+    if (motion) root.setAttribute('data-motion', motion);
+  } catch {
+    // localStorage may be unavailable; normal ThemeProvider initialization will handle it.
+  }
+})();`;
+
 // Keep the existing font choices/visuals while avoiding runtime Google Fonts requests.
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['500', '600', '700', '800'], variable: '--font-playfair', display: 'swap' });
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-space-grotesk-alt', display: 'swap' });
@@ -57,6 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <html lang="en" className={fontVars} suppressHydrationWarning>
         <body className="flex min-h-screen flex-col bg-noise">
+          <script dangerouslySetInnerHTML={{ __html: appearanceBootstrap }} />
           <ThemeProvider>
             <ThemeFavicon />
             <ToastProvider>
