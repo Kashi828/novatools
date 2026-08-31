@@ -1,19 +1,24 @@
 import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 import { Playfair_Display, Space_Grotesk, Merriweather, Poppins, Inter } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
-import { CommandPalette } from '@/components/command-palette';
 import { PromoBanner } from '@/components/promo-banner';
 import { SiteAnnouncement } from '@/components/site-announcement';
 import { ToastProvider } from '@/components/toast-provider';
 import { PageTransition } from '@/components/page-transition';
 
-// All four heading font candidates are preloaded here; which one is "active" is
-// switched purely via CSS custom properties (see globals.css [data-font]), the same
-// technique used for the color themes. No runtime Google Fonts loading needed.
+// Load the command palette only when its client chunk is needed. Keeping it out
+// of the initial shell prevents its tool-registry imports from becoming global JS.
+const CommandPalette = dynamic(
+  () => import('@/components/command-palette').then((mod) => mod.CommandPalette),
+  { ssr: false }
+);
+
+// Keep the existing font choices/visuals while avoiding runtime Google Fonts requests.
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['500', '600', '700', '800'], variable: '--font-playfair', display: 'swap' });
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-space-grotesk-alt', display: 'swap' });
 const merriweather = Merriweather({ subsets: ['latin'], weight: ['700', '900'], variable: '--font-merriweather', display: 'swap' });
