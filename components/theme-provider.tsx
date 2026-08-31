@@ -16,6 +16,12 @@ export interface CustomColors {
   accent: string;
 }
 
+export const DEFAULT_CUSTOM_COLORS: CustomColors = {
+  primary: '#C9A961',
+  secondary: '#A97142',
+  accent: '#6B7280',
+};
+
 interface ThemeContextValue {
   theme: Theme;
   toggleTheme: () => void;
@@ -32,8 +38,6 @@ interface ThemeContextValue {
   motionPreference: MotionPreference;
   setMotionPreference: (preference: MotionPreference) => void;
 }
-
-const DEFAULT_CUSTOM: CustomColors = { primary: '#C9A961', secondary: '#A97142', accent: '#6B7280' };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
@@ -76,7 +80,7 @@ function clearCustomColors() {
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark');
   const [colorTheme, setColorThemeState] = useState<ColorTheme>('gold');
-  const [customColors, setCustomColorsState] = useState<CustomColors>(DEFAULT_CUSTOM);
+  const [customColors, setCustomColorsState] = useState<CustomColors>(DEFAULT_CUSTOM_COLORS);
   const [fontPairing, setFontPairingState] = useState<FontPairing>('elegant');
   const [radiusStyle, setRadiusStyleState] = useState<RadiusStyle>('rounded');
   const [uiScale, setUiScaleState] = useState<UiScale>('comfortable');
@@ -144,8 +148,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     } else {
       clearCustomColors();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorTheme]);
+  }, [colorTheme, customColors]);
 
   function setColorTheme(t: ColorTheme) {
     setColorThemeState(t);
