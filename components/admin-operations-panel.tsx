@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Download, Eye, EyeOff, Filter, RefreshCw, Search, Sparkles } from 'lucide-react';
 import { tools } from '@/data/tools';
 import { categories } from '@/data/categories';
 import { Button } from '@/components/ui/button';
+import { Select } from '@/components/ui/select';
 
 export function AdminOperationsPanel() {
   const [query, setQuery] = useState('');
@@ -29,13 +30,11 @@ export function AdminOperationsPanel() {
     }
   }
 
-  useState(() => {
-    void refresh();
-    return undefined;
-  });
+  useEffect(() => { void refresh(); }, []);
 
   const filtered = useMemo(() => tools.filter((tool) => {
-    const matchesQuery = !query.trim() || `${tool.name} ${tool.shortDescription} ${tool.keywords.join(' ')}`.toLowerCase().includes(query.trim().toLowerCase());
+    const needle = query.trim().toLowerCase();
+    const matchesQuery = !needle || `${tool.name} ${tool.shortDescription} ${tool.keywords.join(' ')}`.toLowerCase().includes(needle);
     const matchesCategory = category === 'all' || tool.category === category;
     const hidden = hiddenSlugs.has(tool.slug);
     const matchesStatus = status === 'all' || (status === 'visible' && !hidden) || (status === 'hidden' && hidden) || (status === 'premium' && tool.premium) || (status === 'new' && tool.isNew);
@@ -70,9 +69,9 @@ export function AdminOperationsPanel() {
         if (!res.ok) failed += 1;
       } catch { failed += 1; }
     }
-    setBusy(false);
     if (failed) setMessage(`${failed} tool${failed === 1 ? '' : 's'} could not be updated.`);
     else setMessage(`${filtered.length} tool${filtered.length === 1 ? '' : 's'} ${hidden ? 'hidden' : 'made visible'}.`);
+    setBusy(false);
     await refresh();
   }
 
@@ -101,6 +100,8 @@ export function AdminOperationsPanel() {
   const hiddenCount = tools.length - visibleCount;
   const premiumCount = tools.filter((tool) => tool.premium).length;
   const newCount = tools.filter((tool) => tool.isNew).length;
+  const categoryOptions = [{ value: 'all', label: 'All categories' }, ...categories.map((item) => ({ value: item.slug, label: item.name }))];
+  const statusOptions = [{ value: 'all', label: 'All status' }, { value: 'visible', label: 'Visible' }, { value: 'hidden', label: 'Hidden' }, { value: 'premium', label: 'Premium' }, { value: 'new', label: 'New' }];
 
   return (
     <div className="space-y-4 rounded-xl2 border border-black/10 bg-black/[0.02] p-5 dark:border-white/10 dark:bg-white/5">
@@ -110,8 +111,8 @@ export function AdminOperationsPanel() {
 
       <div className="grid gap-3 md:grid-cols-[1fr_auto_auto]">
         <label className="relative block"><Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-black/35 dark:text-white/35" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search tools..." className="w-full rounded-xl border border-black/10 bg-white/60 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-primary-400 dark:border-white/10 dark:bg-white/5" /></label>
-        <select value={category} onChange={(e) => setCategory(e.target.value)} className="rounded-xl border border-black/10 bg-white/60 px-3 text-sm dark:border-white/10 dark:bg-white/5"><option value="all">All categories</option>{categories.map((item) => <option key={item.slug} value={item.slug}>{item.name}</option>)}</select>
-        <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-xl border border-black/10 bg-white/60 px-3 text-sm dark:border-white/10 dark:bg-white/5"><option value="all">All status</option><option value="visible">Visible</option><option value="hidden">Hidden</option><option value="premium">Premium</option><option value="new">New</option></select>
+        <Select value={category} onChange={setCategory} options={categoryOptions} className="md:w-52" />
+        <Select value={status} onChange={setStatus} options={statusOptions} className="md:w-40" />
       </div>
 
       <div className="flex flex-wrap gap-2">
