@@ -62,9 +62,6 @@ function applyCustomColors(colors: CustomColors) {
   root.style.setProperty('--color-grad-2', primary[500]);
   root.style.setProperty('--color-grad-3', secondary[500]);
   root.style.setProperty('--color-glow', primary[500]);
-  root.style.setProperty('--logo-grad-1', colors.primary);
-  root.style.setProperty('--logo-grad-2', colors.primary);
-  root.style.setProperty('--logo-grad-3', colors.secondary);
 }
 
 function clearCustomColors() {
@@ -95,6 +92,21 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (storedScale) setUiScaleState(storedScale);
     const storedMotion = window.localStorage.getItem('novatools-motion') as MotionPreference | null;
     if (storedMotion) setMotionPreferenceState(storedMotion);
+
+    const storedTheme = window.localStorage.getItem('novatools-theme') as Theme | null;
+    if (storedTheme) setTheme(storedTheme);
+
+    const storedColor = window.localStorage.getItem('novatools-color-theme') as ColorTheme | null;
+    if (storedColor) setColorThemeState(storedColor);
+
+    const storedCustom = window.localStorage.getItem('novatools-custom-colors');
+    if (storedCustom) {
+      try {
+        setCustomColorsState(JSON.parse(storedCustom));
+      } catch {
+        // Ignore malformed stored data.
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -118,24 +130,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [motionPreference]);
 
   useEffect(() => {
-    const storedTheme = window.localStorage.getItem('novatools-theme') as Theme | null;
-    const preferred = storedTheme ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    setTheme(preferred);
-
-    const storedColor = window.localStorage.getItem('novatools-color-theme') as ColorTheme | null;
-    if (storedColor) setColorThemeState(storedColor);
-
-    const storedCustom = window.localStorage.getItem('novatools-custom-colors');
-    if (storedCustom) {
-      try {
-        setCustomColorsState(JSON.parse(storedCustom));
-      } catch {
-        // Ignore malformed stored data.
-      }
-    }
-  }, []);
-
-  useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
     window.localStorage.setItem('novatools-theme', theme);
   }, [theme]);
@@ -151,6 +145,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [colorTheme, customColors]);
 
   function setColorTheme(t: ColorTheme) {
+    // Persist and update the DOM immediately so navigation cannot race the effect.
+    window.localStorage.setItem('novatools-color-theme', t);
+    document.documentElement.setAttribute('data-theme', t === 'custom' ? 'gold' : t);
+    if (t === 'custom') applyCustomColors(customColors);
+    else clearCustomColors();
     setColorThemeState(t);
   }
 
@@ -160,11 +159,20 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (colorTheme === 'custom') applyCustomColors(c);
   }
 
+  function toggleTheme() {
+    setTheme((current) => {
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.classList.toggle('dark', next === 'dark');
+      window.localStorage.setItem('novatools-theme', next);
+      return next;
+    });
+  }
+
   return (
     <ThemeContext.Provider
       value={{
         theme,
-        toggleTheme: () => setTheme((t) => (t === 'dark' ? 'light' : 'dark')),
+        toggleTheme,
         colorTheme,
         setColorTheme,
         customColors,
