@@ -62,6 +62,11 @@ function applyCustomColors(colors: CustomColors) {
   root.style.setProperty('--color-grad-2', primary[500]);
   root.style.setProperty('--color-grad-3', secondary[500]);
   root.style.setProperty('--color-glow', primary[500]);
+
+  // Keep branding synchronized with the exact custom colors selected by the user.
+  root.style.setProperty('--logo-grad-1', colors.primary);
+  root.style.setProperty('--logo-grad-2', colors.primary);
+  root.style.setProperty('--logo-grad-3', colors.secondary);
 }
 
 function clearCustomColors() {
@@ -105,7 +110,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [uiScale, setUiScaleState] = useState<UiScale>('comfortable');
   const [motionPreference, setMotionPreferenceState] = useState<MotionPreference>('full');
 
-  // Restore every preference before any persistence effect is allowed to run.
   useEffect(() => {
     const storedTheme = readStored<Theme>('novatools-theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     const storedColor = readStored<ColorTheme>('novatools-color-theme', 'gold');
