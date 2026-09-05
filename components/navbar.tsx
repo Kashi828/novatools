@@ -1,90 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Moon, Sun, Search, Menu, X } from 'lucide-react';
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
-import { Logo } from '@/components/logo';
-import { ThemePicker } from '@/components/theme-picker';
-import { useTheme } from '@/components/theme-provider';
-
-const BASE_NAV_LINKS = [
-  { href: '/tools', label: 'All Tools' },
-  { href: '/categories', label: 'Categories' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/feedback', label: 'Feedback' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-];
+import { Menu, Search, Sparkles, X } from 'lucide-react';
+import { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 
 export function Navbar() {
-  const { theme, toggleTheme } = useTheme();
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
-  const [promoEnabled, setPromoEnabled] = useState(false);
-
-  useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 12);
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  useEffect(() => {
-    fetch('/api/site-settings')
-      .then((res) => res.ok ? res.json() : null)
-      .then((data) => setPromoEnabled(data?.promoEnabled === true))
-      .catch(() => undefined);
-  }, []);
-
-  const navLinks = promoEnabled ? BASE_NAV_LINKS.filter((link) => link.href !== '/pricing') : BASE_NAV_LINKS;
-
-  return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'border-b border-black/5 bg-white/70 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-bg-dark/70' : 'bg-transparent'}`}>
-      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2 font-heading text-lg font-bold">
-          <Logo />
-          <span className="nova-title">NovaTools</span>
-        </Link>
-
-        <div className="hidden items-center gap-1 md:flex" onMouseLeave={() => setHoveredLink(null)}>
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} onMouseEnter={() => setHoveredLink(link.href)} className="relative rounded-lg px-3 py-2 text-sm font-medium text-black/70 transition-colors hover:text-black dark:text-white/70 dark:hover:text-white">
-              {hoveredLink === link.href && <motion.span layoutId="nav-hover-pill" className="absolute inset-0 rounded-lg bg-black/5 dark:bg-white/10" transition={{ type: 'spring', stiffness: 500, damping: 35 }} />}
-              <span className="relative">{link.label}</span>
-            </Link>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))} className="hidden items-center gap-2 rounded-lg border border-black/10 px-3 py-1.5 text-sm text-black/50 transition-colors hover:border-primary-400/50 dark:border-white/10 dark:text-white/50 sm:flex">
-            <Search className="h-3.5 w-3.5" /> Search
-            <kbd className="rounded border border-black/10 bg-black/5 px-1.5 py-0.5 text-[10px] dark:border-white/10 dark:bg-white/10">Ctrl K</kbd>
-          </button>
-          <button onClick={toggleTheme} aria-label="Toggle theme" className="flex h-9 w-9 items-center justify-center rounded-lg border border-black/10 transition-colors hover:border-primary-400/50 dark:border-white/10">
-            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
-          <ThemePicker />
-
-          {!promoEnabled && <>
-            <SignedOut><SignInButton mode="modal"><button className="hidden rounded-lg bg-gradient-brand px-3.5 py-1.5 text-sm font-medium text-white shadow-glow sm:block">Sign in</button></SignInButton></SignedOut>
-            <SignedIn><UserButton afterSignOutUrl="/" /></SignedIn>
-          </>}
-
-          <button onClick={() => setMobileOpen((open) => !open)} aria-label="Toggle menu" className="flex h-9 w-9 items-center justify-center rounded-lg border border-black/10 dark:border-white/10 md:hidden">
-            {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-          </button>
-        </div>
-      </nav>
-
-      {mobileOpen && (
-        <div className="border-t border-black/5 bg-white/95 px-4 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-bg-dark/95 md:hidden">
-          {navLinks.map((link) => <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="block rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/10">{link.label}</Link>)}
-        </div>
-      )}
-    </header>
-  );
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const links = [{ href: '/tools', label: 'Tools' }, { href: '/categories', label: 'Categories' }, { href: '/converters', label: 'Converters' }, { href: '/pdf-tools', label: 'PDF tools' }];
+  return <header className="sticky top-0 z-50 border-b border-black/[0.06] bg-bg-light/80 backdrop-blur-2xl dark:border-white/[0.08] dark:bg-bg-dark/80"><div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"><Link href="/" className="group flex items-center gap-2.5" aria-label="NovaTools home"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-500/10 text-primary-600 ring-1 ring-primary-500/15 transition group-hover:scale-105 dark:text-primary-400"><Sparkles className="h-4 w-4" /></span><span className="text-lg font-bold tracking-tight">Nova<span className="text-gradient">Tools</span></span></Link><nav className="hidden items-center gap-1 md:flex" aria-label="Primary navigation">{links.map((link)=><Link key={link.href} href={link.href} className={`rounded-lg px-3 py-2 text-sm font-medium transition ${pathname===link.href||pathname.startsWith(link.href+'/')?'bg-primary-500/10 text-primary-700 dark:text-primary-300':'text-black/55 hover:bg-black/5 hover:text-black dark:text-white/60 dark:hover:bg-white/5 dark:hover:text-white'}`}>{link.label}</Link>)}</nav><div className="flex items-center gap-1.5"><Link href="/tools#search" aria-label="Search tools" className="hidden h-9 w-9 items-center justify-center rounded-lg text-black/55 transition hover:bg-black/5 hover:text-black sm:flex dark:text-white/60 dark:hover:bg-white/5 dark:hover:text-white"><Search className="h-4 w-4" /></Link><ThemeSwitcher /><button type="button" aria-label="Toggle menu" aria-expanded={open} onClick={()=>setOpen(v=>!v)} className="flex h-9 w-9 items-center justify-center rounded-lg text-black/55 transition hover:bg-black/5 dark:text-white/60 dark:hover:bg-white/5 md:hidden">{open?<X className="h-5 w-5"/>:<Menu className="h-5 w-5"/>}</button></div></div>{open&&<div className="border-t border-black/[0.06] px-4 py-3 dark:border-white/[0.08] md:hidden"><nav className="grid gap-1">{links.map(link=><Link key={link.href} href={link.href} onClick={()=>setOpen(false)} className="rounded-xl px-3 py-3 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/5">{link.label}</Link>)}</nav></div>}</header>;
 }
