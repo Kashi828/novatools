@@ -1,0 +1,1 @@
+Admin monitoring is served through /api/admin/monitor and only available to the configured admin account.
