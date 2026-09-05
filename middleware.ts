@@ -1,12 +1,6 @@
 import { clerkMiddleware } from '@clerk/nextjs/server';
 
-export default clerkMiddleware((auth, req) => {
-  // Authentication is opt-in on NovaTools. Keep the auth entry points public so
-  // Clerk can complete its multi-step path flow without middleware redirects.
-  if (req.nextUrl.pathname.startsWith('/sign-in') || req.nextUrl.pathname.startsWith('/sign-up')) {
-    return;
-  }
-});
+export default clerkMiddleware();
 
 export const config = {
   matcher: [
