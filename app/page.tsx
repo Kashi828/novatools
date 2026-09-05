@@ -1,205 +1,41 @@
 import Link from 'next/link';
-import { ArrowRight, Zap, ShieldCheck, Sparkles, Star } from 'lucide-react';
-import { Hero } from '@/components/home/hero';
-import { ToolCard } from '@/components/tool-card';
-import { Reveal } from '@/components/reveal';
-import { StaggerGrid, StaggerItem } from '@/components/stagger-grid';
-import { categories } from '@/data/categories';
+import { ArrowRight, Search, ShieldCheck, Sparkles, WandSparkles, Zap } from 'lucide-react';
 import { getFeaturedTools, getNewTools, getTrendingTools, tools } from '@/data/tools';
+import { categories } from '@/data/categories';
 import { getHiddenSlugs } from '@/lib/tool-visibility';
+import { HomeMotion } from '@/components/home/home-motion';
 
 export const dynamic = 'force-dynamic';
 
-const STATS = [
-  { value: '200+', label: 'Tools & counting' },
-  { value: '0', label: 'Signups required' },
-  { value: '100%', label: 'Runs in your browser' },
-  { value: '13', label: 'Categories covered' },
-];
-
-const REASONS = [
-  { icon: Zap, title: 'Instant', description: 'Every tool loads and runs in milliseconds — no spinners, no waiting.' },
-  { icon: ShieldCheck, title: 'Private by default', description: 'Most tools process everything locally in your browser. Nothing is uploaded.' },
-  { icon: Sparkles, title: 'No clutter', description: 'One focused interface per tool — no ads blocking what you came to do.' },
-];
-
-const TESTIMONIALS = [
-  { quote: 'I bookmark this instead of five different sites now.', name: 'Priya S.', role: 'Frontend Developer' },
-  { quote: 'The EMI and GST calculators save me actual time every week.', name: 'Arjun M.', role: 'Small Business Owner' },
-  { quote: 'Clean, fast, and it just works on my phone too.', name: 'Dev K.', role: 'CS Student' },
-];
-
-const FAQS = [
-  { q: 'Do I need to create an account?', a: 'No — most tools on NovaTools work instantly with no signup or login required. A few bonus tools do need a free account to access, but there\u2019s never a charge to create one.' },
-  { q: 'Is my data uploaded anywhere?', a: 'Most tools run entirely in your browser using JavaScript, so your input never leaves your device.' },
-  { q: 'Is NovaTools really free?', a: 'Yes, every tool is free to use. Some bonus tools just require signing in first.' },
-  { q: 'Can I use NovaTools on mobile?', a: 'Yes — every tool is fully responsive and works great on phones and tablets.' },
+const benefits = [
+  { icon: Zap, title: 'Instant', text: 'Fast, focused tools with no unnecessary setup.' },
+  { icon: ShieldCheck, title: 'Private by default', text: 'Most tools process your data locally in the browser.' },
+  { icon: Sparkles, title: 'Free to use', text: 'Useful everyday utilities without a wall of friction.' },
 ];
 
 export default async function HomePage() {
-  const hiddenSlugs = new Set(await getHiddenSlugs());
-  const trending = getTrendingTools().filter((t) => !hiddenSlugs.has(t.slug));
-  const featured = getFeaturedTools().filter((t) => !hiddenSlugs.has(t.slug));
-  const newTools = getNewTools().filter((t) => !hiddenSlugs.has(t.slug));
+  const hidden = new Set(await getHiddenSlugs());
+  const visible = (list: typeof tools) => list.filter((tool) => !hidden.has(tool.slug));
+  const trending = visible(getTrendingTools()).slice(0, 8);
+  const featured = visible(getFeaturedTools()).slice(0, 8);
+  const fresh = visible(getNewTools()).slice(0, 4);
 
-  return (
-    <>
-      <Hero />
-
-      {newTools.length > 0 && (
-        <Reveal>
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="mb-6 flex items-center gap-2">
-            <span className="flex h-2 w-2 rounded-full bg-success" />
-            <h2 className="font-heading text-2xl font-bold sm:text-3xl">New releases</h2>
-          </div>
-          <StaggerGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {newTools.map((tool) => (
-              <StaggerItem key={tool.slug}><ToolCard tool={tool} /></StaggerItem>
-            ))}
-          </StaggerGrid>
-        </section>
-      </Reveal>
-      )}
-
-      <Reveal>
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-heading text-2xl font-bold sm:text-3xl">Trending tools</h2>
-          <Link href="/tools" className="flex items-center gap-1 text-sm font-medium text-primary-500 hover:underline">
-            View all <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+  return <HomeMotion>
+    <section className="relative overflow-hidden border-b border-black/[0.06] dark:border-white/[0.08]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgb(var(--color-primary-500)/.14),transparent_42%)]" />
+      <div className="mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 sm:pt-24 lg:px-8 lg:pb-28">
+        <div className="mx-auto max-w-4xl text-center">
+          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-primary-500/20 bg-primary-500/[0.07] px-3.5 py-1.5 text-xs font-semibold text-primary-700 dark:text-primary-300"><WandSparkles className="h-3.5 w-3.5" />A better toolbox for the web</div>
+          <h1 className="text-balance text-5xl font-bold tracking-[-0.04em] sm:text-6xl lg:text-7xl">Everything useful,<span className="block text-gradient">in one place.</span></h1>
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-black/60 dark:text-white/60 sm:text-lg">Fast, beautifully simple tools for developers, creators, students, businesses, and everyday life.</p>
+          <div className="mx-auto mt-9 flex max-w-2xl flex-col gap-3 sm:flex-row"><Link href="/tools" className="group inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-lg shadow-primary-500/20 transition hover:-translate-y-0.5 hover:bg-primary-700">Explore all tools <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" /></Link><Link href="/tools#search" className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-black/10 bg-white/70 px-5 text-sm font-semibold backdrop-blur-xl transition hover:border-primary-500/30 hover:bg-white dark:border-white/10 dark:bg-white/[0.06] dark:hover:bg-white/[0.09]"><Search className="h-4 w-4" />Find a tool</Link></div>
         </div>
-        <StaggerGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {trending.map((tool) => (
-            <StaggerItem key={tool.slug}><ToolCard tool={tool} /></StaggerItem>
-          ))}
-        </StaggerGrid>
-      </section>
-      </Reveal>
-
-      <Reveal>
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-heading text-2xl font-bold sm:text-3xl">Featured tools</h2>
-        </div>
-        <StaggerGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((tool) => (
-            <StaggerItem key={tool.slug}><ToolCard tool={tool} /></StaggerItem>
-          ))}
-        </StaggerGrid>
-      </section>
-      </Reveal>
-
-      <Reveal>
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <h2 className="mb-6 font-heading text-2xl font-bold sm:text-3xl">Browse by category</h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {categories.map((cat) => {
-            const count = tools.filter((t) => t.category === cat.slug && !hiddenSlugs.has(t.slug)).length;
-            return (
-              <Link
-                key={cat.slug}
-                href={`/categories/${cat.slug}`}
-                className="group flex flex-col gap-3 rounded-xl2 border border-black/5 bg-white/70 p-5 shadow-glass backdrop-blur-xl transition-all hover:-translate-y-1 hover:border-primary-400/40 dark:border-white/10 dark:bg-white/5"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400">
-                  <cat.icon className="h-5 w-5" />
-                </span>
-                <div>
-                  <h3 className="font-heading text-sm font-semibold">{cat.name}</h3>
-                  <p className="mt-0.5 text-xs text-black/50 dark:text-white/50">{count} tools</p>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-      </Reveal>
-
-      <Reveal>
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <h2 className="mb-10 text-center font-heading text-2xl font-bold sm:text-3xl">Why choose NovaTools</h2>
-        <div className="grid gap-6 sm:grid-cols-3">
-          {REASONS.map((r) => (
-            <div key={r.title} className="rounded-xl2 border border-black/5 bg-white/70 p-6 text-center shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
-              <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-brand text-white shadow-glow">
-                <r.icon className="h-6 w-6" />
-              </span>
-              <h3 className="font-heading text-lg font-semibold">{r.title}</h3>
-              <p className="mt-2 text-sm text-black/60 dark:text-white/60">{r.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-      </Reveal>
-
-      <Reveal>
-      <section className="border-y border-black/5 bg-black/[0.02] py-14 dark:border-white/10 dark:bg-white/[0.02]">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 sm:grid-cols-4 sm:px-6 lg:px-8">
-          {STATS.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="font-heading text-3xl font-bold text-gradient sm:text-4xl">{s.value}</div>
-              <div className="mt-1 text-sm text-black/60 dark:text-white/60">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-      </Reveal>
-
-      <Reveal>
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <h2 className="mb-10 text-center font-heading text-2xl font-bold sm:text-3xl">Loved by everyday users</h2>
-        <div className="grid gap-6 sm:grid-cols-3">
-          {TESTIMONIALS.map((t) => (
-            <div key={t.name} className="rounded-xl2 border border-black/5 bg-white/70 p-6 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
-              <div className="mb-3 flex gap-0.5 text-warning">
-                {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}
-              </div>
-              <p className="text-sm text-black/70 dark:text-white/70">&ldquo;{t.quote}&rdquo;</p>
-              <div className="mt-4 text-sm font-medium">{t.name}</div>
-              <div className="text-xs text-black/50 dark:text-white/50">{t.role}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-      </Reveal>
-
-      <Reveal>
-      <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-        <h2 className="mb-8 text-center font-heading text-2xl font-bold sm:text-3xl">Frequently asked questions</h2>
-        <div className="space-y-3">
-          {FAQS.map((f) => (
-            <details key={f.q} className="group rounded-xl border border-black/10 bg-white/60 p-4 dark:border-white/10 dark:bg-white/5">
-              <summary className="cursor-pointer list-none font-medium marker:content-none">{f.q}</summary>
-              <p className="mt-2 text-sm text-black/60 dark:text-white/60">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-      </Reveal>
-
-      <Reveal>
-      <section className="mx-auto max-w-4xl px-4 pb-20 sm:px-6 lg:px-8">
-        <div className="rounded-xl2 bg-gradient-brand p-8 text-center text-white shadow-glow sm:p-12">
-          <h2 className="font-heading text-2xl font-bold sm:text-3xl">Get new tools in your inbox</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-white/80">
-            Occasional emails when we ship something new. No spam, unsubscribe anytime.
-          </p>
-          <form className="mx-auto mt-6 flex max-w-sm gap-2">
-            <input
-              type="email"
-              required
-              placeholder="you@example.com"
-              className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white outline-none placeholder:text-white/60"
-            />
-            <button type="submit" className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-primary-600">
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </section>
-      </Reveal>
-    </>
-  );
+      </div>
+    </section>
+    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">{fresh.length > 0 && <ToolSection title="New releases" tools={fresh} />}<ToolSection title="Trending tools" tools={trending} link="/tools" /><ToolSection title="Featured tools" tools={featured} /></section>
+    <section className="border-y border-black/[0.06] bg-black/[0.02] dark:border-white/[0.08] dark:bg-white/[0.02]"><div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8"><div className="mb-8 flex items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-primary-600 dark:text-primary-400">Explore</p><h2 className="mt-2 text-3xl font-bold tracking-tight">Browse by category</h2></div><Link href="/categories" className="text-sm font-semibold text-primary-600 hover:underline dark:text-primary-400">View all</Link></div><div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{categories.map((cat) => {const count = tools.filter((tool) => tool.category === cat.slug && !hidden.has(tool.slug)).length;return <Link key={cat.slug} href={`/categories/${cat.slug}`} className="group rounded-2xl border border-black/[0.07] bg-white/75 p-5 backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:border-primary-500/30 hover:shadow-lg hover:shadow-black/5 dark:border-white/[0.08] dark:bg-white/[0.04] dark:hover:shadow-black/20"><span className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-500/10 text-primary-600 transition group-hover:scale-105 dark:text-primary-400"><cat.icon className="h-5 w-5" /></span><span className="block text-sm font-semibold">{cat.name}</span><span className="mt-1 block text-xs text-black/45 dark:text-white/45">{count} tools</span></Link>;})}</div></div></section>
+    <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8"><div className="grid gap-4 sm:grid-cols-3">{benefits.map(({ icon: Icon, title, text }) => <div key={title} className="rounded-2xl border border-black/[0.07] bg-white/65 p-6 dark:border-white/[0.08] dark:bg-white/[0.04]"><Icon className="mb-5 h-5 w-5 text-primary-600 dark:text-primary-400" /><h3 className="font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-black/55 dark:text-white/55">{text}</p></div>)}</div></section>
+  </HomeMotion>;
 }
+
+function ToolSection({ title, tools: items, link }: { title: string; tools: typeof tools; link?: string }) { if (!items.length) return null; return <section className="py-8 first:pt-0"><div className="mb-5 flex items-center justify-between"><h2 className="text-2xl font-bold tracking-tight">{title}</h2>{link && <Link href={link} className="inline-flex items-center gap-1 text-sm font-semibold text-primary-600 hover:underline dark:text-primary-400">View all <ArrowRight className="h-3.5 w-3.5" /></Link>}</div><div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">{items.map((tool) => <Link key={tool.slug} href={tool.href} className="group rounded-2xl border border-black/[0.07] bg-white/75 p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-primary-500/30 hover:shadow-xl hover:shadow-black/5 dark:border-white/[0.08] dark:bg-white/[0.04] dark:hover:shadow-black/20"><div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-primary-500/10 text-primary-600 dark:text-primary-400">{tool.icon && <tool.icon className="h-5 w-5" />}</div><h3 className="font-semibold">{tool.name}</h3><p className="mt-1.5 line-clamp-2 text-sm leading-5 text-black/50 dark:text-white/50">{tool.description}</p><span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-primary-600 opacity-0 transition group-hover:opacity-100 dark:text-primary-400">Open <ArrowRight className="h-3 w-3" /></span></Link>)}</div></section>; }
