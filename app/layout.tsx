@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Playfair_Display, Space_Grotesk, Merriweather, Poppins, Inter } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
+import './visual-consistency.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeFavicon } from '@/components/theme-favicon';
 import { Navbar } from '@/components/navbar';
