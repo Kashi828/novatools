@@ -59,7 +59,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const fontVars = `${playfair.variable} ${spaceGrotesk.variable} ${merriweather.variable} ${poppins.variable} ${inter.variable}`;
   return (
-    <ClerkProvider appearance={{ variables: { colorPrimary: '#C9A961' } }}>
+    <ClerkProvider
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      appearance={{ variables: { colorPrimary: '#C9A961' } }}
+    >
       <html lang="en" className={fontVars} suppressHydrationWarning>
         <body className="flex min-h-screen flex-col bg-noise">
           <script dangerouslySetInnerHTML={{ __html: appearanceBootstrap }} />
