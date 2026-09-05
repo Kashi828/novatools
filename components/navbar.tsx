@@ -12,7 +12,7 @@ export function Navbar() {
   const [promoEnabled, setPromoEnabled] = useState(true);
   const pathname = usePathname();
   const { isLoaded, isSignedIn } = useAuth();
-  const links = [{ href: '/tools', label: 'Tools' }, { href: '/categories', label: 'Categories' }, { href: '/converters', label: 'Converters' }, { href: '/pdf-tools', label: 'PDF tools' }];
+  const links = [{ href: '/tools', label: 'Tools' }, { href: '/categories', label: 'Categories' }];
   useEffect(() => { fetch('/api/site-settings').then((res) => res.ok ? res.json() : null).then((data) => { if (data && typeof data.promoEnabled === 'boolean') setPromoEnabled(data.promoEnabled); }).catch(() => undefined); }, []);
   const authReady = isLoaded;
   const active = (href: string) => pathname === href || pathname.startsWith(href + '/');

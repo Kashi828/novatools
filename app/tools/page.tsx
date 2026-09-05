@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { ArrowLeftRight, FileText } from 'lucide-react';
 import { ToolsExplorer } from '@/components/tools-explorer';
+import { ToolSuites } from '@/components/tool-suites';
 
 export const metadata: Metadata = {
   title: 'All Tools',
@@ -12,21 +13,23 @@ export const metadata: Metadata = {
 export default function AllToolsPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <h1 className="font-heading text-3xl font-bold sm:text-4xl">All Tools</h1>
-      <p className="mt-2 text-black/60 dark:text-white/60">Search or filter to find exactly what you need.</p>
-
-      <div className="mt-8 grid gap-4 md:grid-cols-2">
-        <Link href="/converters" className="group rounded-xl2 border border-primary-400/25 bg-primary-50/40 p-5 transition-all hover:-translate-y-0.5 hover:border-primary-400/50 dark:bg-primary-500/5">
-          <div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-500/10 text-primary-500"><ArrowLeftRight className="h-5 w-5" /></span><div><h2 className="font-heading font-semibold">Converter Lab</h2><p className="text-xs text-black/50 dark:text-white/50">11 conversion categories in one workspace</p></div></div>
-        </Link>
-        <Link href="/pdf-tools" className="group rounded-xl2 border border-primary-400/25 bg-primary-50/40 p-5 transition-all hover:-translate-y-0.5 hover:border-primary-400/50 dark:bg-primary-500/5">
-          <div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-500/10 text-primary-500"><FileText className="h-5 w-5" /></span><div><h2 className="font-heading font-semibold">PDF Toolkit</h2><p className="text-xs text-black/50 dark:text-white/50">Extract, delete, reorder, rotate, inspect, and edit metadata</p></div></div>
-        </Link>
+      <div className="max-w-3xl">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary-500">NovaTools workspace</p>
+        <h1 className="mt-2 font-heading text-3xl font-bold tracking-tight sm:text-4xl">One tool. Many functions.</h1>
+        <p className="mt-2 text-black/60 dark:text-white/60">Start with a focused workspace for a whole class of tasks, or search the complete tool library below.</p>
       </div>
 
-      <Suspense fallback={null}>
-        <ToolsExplorer />
-      </Suspense>
+      <section className="mt-9">
+        <div className="mb-5 flex items-end justify-between gap-4"><div><h2 className="text-2xl font-bold tracking-tight">Tool workspaces</h2><p className="mt-1 text-sm text-black/50 dark:text-white/50">Related functions stay together instead of becoming separate tools.</p></div><Link href="/categories" className="text-sm font-semibold text-primary-500 hover:underline">Browse categories</Link></div>
+        <ToolSuites />
+      </section>
+
+      <section className="mt-14" id="search">
+        <div className="mb-5"><h2 className="text-2xl font-bold tracking-tight">Every individual tool</h2><p className="mt-1 text-sm text-black/50 dark:text-white/50">Search when you already know exactly what you need.</p></div>
+        <Suspense fallback={null}>
+          <ToolsExplorer />
+        </Suspense>
+      </section>
     </div>
   );
 }
