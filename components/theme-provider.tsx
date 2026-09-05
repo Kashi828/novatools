@@ -30,27 +30,64 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
-let colorTransitionTimer: number | undefined;
-function startColorTransition() {
-  if (typeof window === 'undefined') return;
-  const root = document.documentElement;
-  if (root.dataset.motion === 'reduced' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  root.classList.remove('theme-color-transition');
-  void root.offsetWidth;
-  root.classList.add('theme-color-transition');
-  if (colorTransitionTimer) window.clearTimeout(colorTransitionTimer);
-  colorTransitionTimer = window.setTimeout(() => root.classList.remove('theme-color-transition'), 300);
-}
+const PALETTE_VARS = [
+  '--color-primary-50','--color-primary-100','--color-primary-400','--color-primary-500','--color-primary-600','--color-primary-700',
+  '--color-secondary-400','--color-secondary-500','--color-secondary-600','--color-accent-400','--color-accent-500',
+  '--color-grad-1','--color-grad-2','--color-grad-3','--color-glow','--logo-grad-1','--logo-grad-2','--logo-grad-3',
+] as const;
+const PALETTE_DURATION = 280;
+
 function writeCookie(key: string, value: string) { document.cookie = `${key}=${encodeURIComponent(value)}; Path=/; Max-Age=31536000; SameSite=Lax`; }
 function applyCustomColors(colors: CustomColors) {
   const root = document.documentElement; const primary = derivePrimaryRamp(colors.primary); const secondary = deriveSecondaryRamp(colors.secondary); const accent = deriveAccentRamp(colors.accent);
   root.style.setProperty('--color-primary-50', primary[50]); root.style.setProperty('--color-primary-100', primary[100]); root.style.setProperty('--color-primary-400', primary[400]); root.style.setProperty('--color-primary-500', primary[500]); root.style.setProperty('--color-primary-600', primary[600]); root.style.setProperty('--color-primary-700', primary[700]);
   root.style.setProperty('--color-secondary-400', secondary[400]); root.style.setProperty('--color-secondary-500', secondary[500]); root.style.setProperty('--color-secondary-600', secondary[600]); root.style.setProperty('--color-accent-400', accent[400]); root.style.setProperty('--color-accent-500', accent[500]);
-  root.style.setProperty('--color-grad-1', primary[400]); root.style.setProperty('--color-grad-2', primary[500]); root.style.setProperty('--color-grad-3', secondary[500]); root.style.setProperty('--color-glow', primary[500]); root.style.setProperty('--logo-grad-1', colors.primary); root.style.setProperty('--logo-grad-2', colors.primary); root.style.setProperty('--logo-grad-3', colors.secondary);
+  root.style.setProperty('--color-grad-1', primary[400]); root.style.setProperty('--color-grad-2', primary[500]); root.style.setProperty('--color-grad-3', secondary[500]); root.style.setProperty('--color-glow', primary[500]);
+  root.style.setProperty('--logo-grad-1', colors.primary); root.style.setProperty('--logo-grad-2', colors.primary); root.style.setProperty('--logo-grad-3', colors.secondary);
 }
-function clearCustomColors() { const root = document.documentElement; ['--color-primary-50','--color-primary-100','--color-primary-400','--color-primary-500','--color-primary-600','--color-primary-700','--color-secondary-400','--color-secondary-500','--color-secondary-600','--color-accent-400','--color-accent-500','--color-grad-1','--color-grad-2','--color-grad-3','--color-glow','--logo-grad-1','--logo-grad-2','--logo-grad-3'].forEach((prop) => root.style.removeProperty(prop)); }
+function clearCustomColors() { const root = document.documentElement; PALETTE_VARS.forEach((prop) => root.style.removeProperty(prop)); }
 function readStored<T>(key: string, fallback: T): T { if (typeof window === 'undefined') return fallback; const value = window.localStorage.getItem(key); return value ? (value as T) : fallback; }
-function readStoredCustomColors(): CustomColors { if (typeof window === 'undefined') return DEFAULT_CUSTOM_COLORS; const value = window.localStorage.getItem('novatools-custom-colors'); if (!value) return DEFAULT_CUSTOM_COLORS; try { const parsed = JSON.parse(value) as Partial<CustomColors>; if (typeof parsed.primary === 'string' && typeof parsed.secondary === 'string' && typeof parsed.accent === 'string') return { primary: parsed.primary, secondary: parsed.secondary, accent: parsed.accent }; } catch { /* ignore */ } return DEFAULT_CUSTOM_COLORS; }
+function readStoredCustomColors(): CustomColors {
+  if (typeof window === 'undefined') return DEFAULT_CUSTOM_COLORS;
+  const value = window.localStorage.getItem('novatools-custom-colors'); if (!value) return DEFAULT_CUSTOM_COLORS;
+  try { const parsed = JSON.parse(value) as Partial<CustomColors>; if (typeof parsed.primary === 'string' && typeof parsed.secondary === 'string' && typeof parsed.accent === 'string') return { primary: parsed.primary, secondary: parsed.secondary, accent: parsed.accent }; } catch { /* ignore malformed local storage */ }
+  return DEFAULT_CUSTOM_COLORS;
+}
+function parseColor(value: string): [number, number, number] | null {
+  const hex = value.trim().match(/^#([0-9a-f]{6})$/i); if (hex) return [parseInt(hex[1].slice(0, 2), 16), parseInt(hex[1].slice(2, 4), 16), parseInt(hex[1].slice(4, 6), 16)];
+  const numbers = value.match(/\d+(?:\.\d+)?/g); if (numbers && numbers.length >= 3) return [Number(numbers[0]), Number(numbers[1]), Number(numbers[2])];
+  return null;
+}
+function colorString(rgb: [number, number, number]) { return `${Math.round(rgb[0])} ${Math.round(rgb[1])} ${Math.round(rgb[2])}`; }
+function capturePalette() {
+  const styles = getComputedStyle(document.documentElement); return Object.fromEntries(PALETTE_VARS.map((name) => [name, styles.getPropertyValue(name).trim()])) as Record<(typeof PALETTE_VARS)[number], string>;
+}
+function animatePalette(applyTarget: () => void, keepInline: boolean) {
+  if (typeof window === 'undefined') { applyTarget(); return; }
+  const root = document.documentElement;
+  const reduced = root.dataset.motion === 'reduced' || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) { applyTarget(); return; }
+
+  const from = capturePalette();
+  applyTarget();
+  const to = capturePalette();
+  const start = performance.now();
+  PALETTE_VARS.forEach((name) => root.style.setProperty(name, from[name]));
+
+  const tick = (now: number) => {
+    const progress = Math.min(1, (now - start) / PALETTE_DURATION);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    PALETTE_VARS.forEach((name) => {
+      const a = parseColor(from[name]); const b = parseColor(to[name]);
+      if (!a || !b) return;
+      root.style.setProperty(name, colorString([a[0] + (b[0] - a[0]) * eased, a[1] + (b[1] - a[1]) * eased, a[2] + (b[2] - a[2]) * eased]));
+    });
+    if (progress < 1) { window.requestAnimationFrame(tick); return; }
+    if (keepInline) PALETTE_VARS.forEach((name) => root.style.setProperty(name, to[name]));
+    else clearCustomColors();
+  };
+  window.requestAnimationFrame(tick);
+}
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false); const [theme, setTheme] = useState<Theme>('dark'); const [colorTheme, setColorThemeState] = useState<ColorTheme>('gold'); const [customColors, setCustomColorsState] = useState<CustomColors>(DEFAULT_CUSTOM_COLORS); const [fontPairing, setFontPairingState] = useState<FontPairing>('elegant'); const [radiusStyle, setRadiusStyleState] = useState<RadiusStyle>('rounded'); const [uiScale, setUiScaleState] = useState<UiScale>('comfortable'); const [motionPreference, setMotionPreferenceState] = useState<MotionPreference>('full'); const [contrastPreference, setContrastPreferenceState] = useState<ContrastPreference>('standard'); const [surfaceStyle, setSurfaceStyleState] = useState<SurfaceStyle>('clean'); const [cardDensity, setCardDensityState] = useState<CardDensity>('relaxed');
@@ -67,9 +104,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => { if (!ready) return; document.documentElement.setAttribute('data-surface', surfaceStyle); localStorage.setItem('novatools-surface', surfaceStyle); writeCookie('novatools-surface', surfaceStyle); }, [surfaceStyle, ready]);
   useEffect(() => { if (!ready) return; document.documentElement.setAttribute('data-card-density', cardDensity); localStorage.setItem('novatools-card-density', cardDensity); writeCookie('novatools-card-density', cardDensity); }, [cardDensity, ready]);
   useEffect(() => { if (!ready) return; document.documentElement.classList.toggle('dark', theme === 'dark'); localStorage.setItem('novatools-theme', theme); writeCookie('novatools-theme', theme); }, [theme, ready]);
-  useEffect(() => { if (!ready) return; document.documentElement.setAttribute('data-theme', colorTheme === 'custom' ? 'gold' : colorTheme); localStorage.setItem('novatools-color-theme', colorTheme); writeCookie('novatools-color-theme', colorTheme); if (colorTheme === 'custom') applyCustomColors(customColors); else clearCustomColors(); }, [colorTheme, customColors, ready]);
-  function setColorTheme(t: ColorTheme) { startColorTransition(); localStorage.setItem('novatools-color-theme', t); writeCookie('novatools-color-theme', t); document.documentElement.setAttribute('data-theme', t === 'custom' ? 'gold' : t); if (t === 'custom') applyCustomColors(customColors); else clearCustomColors(); setColorThemeState(t); }
-  function setCustomColors(c: CustomColors) { startColorTransition(); setCustomColorsState(c); localStorage.setItem('novatools-custom-colors', JSON.stringify(c)); writeCookie('novatools-custom-colors', JSON.stringify(c)); if (colorTheme === 'custom') applyCustomColors(c); }
+  useEffect(() => { if (!ready) return; localStorage.setItem('novatools-color-theme', colorTheme); writeCookie('novatools-color-theme', colorTheme); localStorage.setItem('novatools-custom-colors', JSON.stringify(customColors)); writeCookie('novatools-custom-colors', JSON.stringify(customColors)); }, [colorTheme, customColors, ready]);
+  function setColorTheme(t: ColorTheme) {
+    localStorage.setItem('novatools-color-theme', t); writeCookie('novatools-color-theme', t);
+    animatePalette(() => { document.documentElement.setAttribute('data-theme', t === 'custom' ? 'gold' : t); if (t === 'custom') applyCustomColors(customColors); else clearCustomColors(); }, t === 'custom');
+    setColorThemeState(t);
+  }
+  function setCustomColors(c: CustomColors) {
+    localStorage.setItem('novatools-custom-colors', JSON.stringify(c)); writeCookie('novatools-custom-colors', JSON.stringify(c));
+    if (colorTheme === 'custom') animatePalette(() => applyCustomColors(c), true);
+    setCustomColorsState(c);
+  }
   function toggleTheme() { setTheme((current) => { const next = current === 'dark' ? 'light' : 'dark'; document.documentElement.classList.toggle('dark', next === 'dark'); localStorage.setItem('novatools-theme', next); writeCookie('novatools-theme', next); return next; }); }
   if (!ready) return null;
   return <ThemeContext.Provider value={{ theme, toggleTheme, colorTheme, setColorTheme, customColors, setCustomColors, fontPairing, setFontPairing: setFontPairingState, radiusStyle, setRadiusStyle: setRadiusStyleState, uiScale, setUiScale: setUiScaleState, motionPreference, setMotionPreference: setMotionPreferenceState, contrastPreference, setContrastPreference: setContrastPreferenceState, surfaceStyle, setSurfaceStyle: setSurfaceStyleState, cardDensity, setCardDensity: setCardDensityState }}>{children}</ThemeContext.Provider>;
