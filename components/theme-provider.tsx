@@ -262,65 +262,108 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   function setCustomColors(colors: CustomColors) {
     const safe = sanitizeCustomColors(colors, customColors);
-    if (colorTheme === 'custom') animatePalette(() => applyCustomColors(safe), true);
+    // Color inputs fire continuously while dragging. Do not restart the 280ms
+    // palette transition for every intermediate value; that creates the
+    // visible lag/fading where the preview never catches up with the picker.
+    if (colorTheme === 'custom') {
+      cancelPaletteAnimation();
+      applyCustomColors(safe);
+    }
     setCustomColorsState(safe);
   }
 
   function setMotionPreference(preference: MotionPreference) {
-    setMotionPreferenceState(preference);
-    if (preference === 'reduced') cancelPaletteAnimation();
-  }
-
-  function toggleTheme() {
-    setTheme((current) => {
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.classList.toggle('dark', next === 'dark');
-      return next;
-    });
+    const next = MOTION_PREFERENCES.includes(preference) ? preference : 'full';
+    setMotionPreferenceState(next);
+    if (next === 'reduced') cancelPaletteAnimation();
   }
 
   function resetPreferences() {
     cancelPaletteAnimation();
     const html = document.documentElement;
-    html.classList.remove('dark');
-    html.setAttribute('data-theme', 'gold');
-    html.setAttribute('data-font', 'elegant');
-    html.setAttribute('data-radius', 'rounded');
-    html.setAttribute('data-ui-scale', 'comfortable');
-    html.setAttribute('data-motion', 'full');
-    html.setAttribute('data-contrast', 'standard');
-    html.setAttribute('data-surface', 'clean');
-    html.setAttribute('data-card-density', 'relaxed');
+    const defaults = {
+      theme: 'dark' as Theme,
+      colorTheme: 'gold' as ColorTheme,
+      fontPairing: 'elegant' as FontPairing,
+      radiusStyle: 'rounded' as RadiusStyle,
+      uiScale: 'comfortable' as UiScale,
+      motionPreference: 'full' as MotionPreference,
+      contrastPreference: 'standard' as ContrastPreference,
+      surfaceStyle: 'clean' as SurfaceStyle,
+      cardDensity: 'relaxed' as CardDensity,
+    };
+    html.classList.add('dark');
+    html.setAttribute('data-theme', defaults.colorTheme);
+    html.setAttribute('data-font', defaults.fontPairing);
+    html.setAttribute('data-radius', defaults.radiusStyle);
+    html.setAttribute('data-ui-scale', defaults.uiScale);
+    html.setAttribute('data-motion', defaults.motionPreference);
+    html.setAttribute('data-contrast', defaults.contrastPreference);
+    html.setAttribute('data-surface', defaults.surfaceStyle);
+    html.setAttribute('data-card-density', defaults.cardDensity);
     clearCustomColors();
-    setTheme('light');
-    setColorThemeState('gold');
+    setTheme(defaults.theme);
+    setColorThemeState(defaults.colorTheme);
     setCustomColorsState(DEFAULT_CUSTOM_COLORS);
-    setFontPairingState('elegant');
-    setRadiusStyleState('rounded');
-    setUiScaleState('comfortable');
-    setMotionPreferenceState('full');
-    setContrastPreferenceState('standard');
-    setSurfaceStyleState('clean');
-    setCardDensityState('relaxed');
+    setFontPairingState(defaults.fontPairing);
+    setRadiusStyleState(defaults.radiusStyle);
+    setUiScaleState(defaults.uiScale);
+    setMotionPreferenceState(defaults.motionPreference);
+    setContrastPreferenceState(defaults.contrastPreference);
+    setSurfaceStyleState(defaults.surfaceStyle);
+    setCardDensityState(defaults.cardDensity);
+    writeStored('novatools-theme', defaults.theme);
+    writeStored('novatools-color-theme', defaults.colorTheme);
+    writeStored('novatools-custom-colors', JSON.stringify(DEFAULT_CUSTOM_COLORS));
+    writeStored('novatools-font', defaults.fontPairing);
+    writeStored('novatools-radius', defaults.radiusStyle);
+    writeStored('novatools-ui-scale', defaults.uiScale);
+    writeStored('novatools-motion', defaults.motionPreference);
+    writeStored('novatools-contrast', defaults.contrastPreference);
+    writeStored('novatools-surface', defaults.surfaceStyle);
+    writeStored('novatools-card-density', defaults.cardDensity);
+    writeCookie('novatools-theme', defaults.theme);
+    writeCookie('novatools-color-theme', defaults.colorTheme);
+    writeCookie('novatools-custom-colors', JSON.stringify(DEFAULT_CUSTOM_COLORS));
+    writeCookie('novatools-font', defaults.fontPairing);
+    writeCookie('novatools-radius', defaults.radiusStyle);
+    writeCookie('novatools-ui-scale', defaults.uiScale);
+    writeCookie('novatools-motion', defaults.motionPreference);
+    writeCookie('novatools-contrast', defaults.contrastPreference);
+    writeCookie('novatools-surface', defaults.surfaceStyle);
+    writeCookie('novatools-card-density', defaults.cardDensity);
   }
 
+  const value: ThemeContextValue = {
+    theme,
+    toggleTheme: () => setTheme((current) => current === 'dark' ? 'light' : 'dark'),
+    resetPreferences,
+    colorTheme,
+    setColorTheme,
+    customColors,
+    setCustomColors,
+    fontPairing,
+    setFontPairing: (value) => setFontPairingState(FONT_PAIRINGS.includes(value) ? value : 'elegant'),
+    radiusStyle,
+    setRadiusStyle: (value) => setRadiusStyleState(RADIUS_STYLES.includes(value) ? value : 'rounded'),
+    uiScale,
+    setUiScale: (value) => setUiScaleState(UI_SCALES.includes(value) ? value : 'comfortable'),
+    motionPreference,
+    setMotionPreference,
+    contrastPreference,
+    setContrastPreference: (value) => setContrastPreferenceState(CONTRAST_PREFERENCES.includes(value) ? value : 'standard'),
+    surfaceStyle,
+    setSurfaceStyle: (value) => setSurfaceStyleState(SURFACE_STYLES.includes(value) ? value : 'clean'),
+    cardDensity,
+    setCardDensity: (value) => setCardDensityState(CARD_DENSITIES.includes(value) ? value : 'relaxed'),
+  };
+
   if (!ready) return null;
-  return <ThemeContext.Provider value={{
-    theme, toggleTheme, resetPreferences,
-    colorTheme, setColorTheme,
-    customColors, setCustomColors,
-    fontPairing, setFontPairing: setFontPairingState,
-    radiusStyle, setRadiusStyle: setRadiusStyleState,
-    uiScale, setUiScale: setUiScaleState,
-    motionPreference, setMotionPreference,
-    contrastPreference, setContrastPreference: setContrastPreferenceState,
-    surfaceStyle, setSurfaceStyle: setSurfaceStyleState,
-    cardDensity, setCardDensity: setCardDensityState,
-  }}>{children}</ThemeContext.Provider>;
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
-  return ctx;
+  const context = useContext(ThemeContext);
+  if (!context) throw new Error('useTheme must be used within ThemeProvider');
+  return context;
 }
