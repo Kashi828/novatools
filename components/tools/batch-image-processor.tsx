@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import JSZip from 'jszip';
-import { PremiumGate } from '@/components/premium-gate';
 import { ToolShell } from '@/components/tool-shell';
 import { Button } from '@/components/ui/button';
-import { Download, Lock, X } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 
 interface BatchFile {
   file: File;
@@ -127,23 +126,5 @@ function BatchImageProcessorInner() {
 }
 
 export function BatchImageProcessor() {
-  return (
-    <PremiumGate
-      fallback={
-        <div className="flex flex-col items-center gap-3 rounded-xl2 border border-black/10 p-12 text-center dark:border-white/10">
-          <Lock className="h-8 w-8 text-gold-500" />
-          <p className="font-medium">This is a Premium tool</p>
-          <p className="max-w-sm text-sm text-black/50 dark:text-white/50">
-            Sign in and subscribe to the Premium plan to batch-process images. It&rsquo;s free to join — just requires an
-            account.
-          </p>
-          <a href="/pricing" className="rounded-xl bg-gradient-premium px-4 py-2 text-sm font-medium text-white shadow-glow-gold">
-            View plans
-          </a>
-        </div>
-      }
-    >
-      <BatchImageProcessorInner />
-    </PremiumGate>
-  );
+  return <BatchImageProcessorInner />;
 }
