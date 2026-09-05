@@ -1,5 +1,6 @@
-import { BrainCircuit, Code2, FileText, Languages, Mail, PenLine, Presentation, Regex, Search, Sparkles, Youtube } from 'lucide-react';
+import { BrainCircuit, Code2, FileText, Languages, Mail, PenLine, Regex, Search, Sparkles, Youtube } from 'lucide-react';
 import type { ToolDefinition } from './types';
+import { tools } from './tools';
 import { NovaAITool } from '@/components/tools/nova-ai-tool';
 
 const definitions: Array<[string, string, string, string, string[]]> = [
@@ -24,15 +25,8 @@ const definitions: Array<[string, string, string, string, string[]]> = [
 
 const icons = [Sparkles, PenLine, Languages, FileText, Mail, FileText, Mail, Search, Sparkles, Youtube, FileText, BrainCircuit, BrainCircuit, Code2, Code2, Regex, Sparkles];
 
-export const aiTools: ToolDefinition[] = definitions.map(([slug, name, shortDescription, description, keywords], index) => ({
-  slug,
-  name,
-  shortDescription,
-  description,
-  category: 'ai',
-  icon: icons[index],
-  keywords,
-  component: NovaAITool,
-  isNew: true,
-  relatedSlugs: ['nova-ai'],
-}));
+export const aiTools: ToolDefinition[] = definitions.map(([slug, name, shortDescription, description, keywords], index) => ({ slug, name, shortDescription, description, category: 'ai', icon: icons[index], keywords, component: NovaAITool, isNew: true, relatedSlugs: ['nova-ai'] }));
+
+for (const tool of aiTools) {
+  if (!tools.some((existing) => existing.slug === tool.slug)) tools.push(tool);
+}
