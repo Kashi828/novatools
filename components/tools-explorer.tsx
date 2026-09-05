@@ -7,6 +7,7 @@ import { ToolCard } from '@/components/tool-card';
 import { StaggerGrid, StaggerItem } from '@/components/stagger-grid';
 import { categories } from '@/data/categories';
 import { searchTools } from '@/data/tools';
+import '@/data/ai-tools';
 import type { CategorySlug } from '@/data/types';
 import { useHiddenTools } from '@/lib/use-hidden-tools';
 
