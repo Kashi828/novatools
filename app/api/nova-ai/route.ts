@@ -12,12 +12,12 @@ type IncomingMessage = { role: 'user' | 'assistant'; content: string };
 
 function cleanMessages(value: unknown): IncomingMessage[] {
   if (!Array.isArray(value)) return [];
-  return value.slice(-MAX_MESSAGES).flatMap((item) => {
+  return value.slice(-MAX_MESSAGES).flatMap((item): IncomingMessage[] => {
     if (!item || typeof item !== 'object') return [];
     const role = (item as { role?: unknown }).role;
     const content = (item as { content?: unknown }).content;
     if ((role !== 'user' && role !== 'assistant') || typeof content !== 'string') return [];
-    return [{ role, content: content.trim().slice(0, MAX_CHARS) }];
+    return [{ role: role as IncomingMessage['role'], content: content.trim().slice(0, MAX_CHARS) }];
   }).filter((item) => item.content.length > 0);
 }
 
