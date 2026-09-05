@@ -3,6 +3,7 @@ import { Playfair_Display, Space_Grotesk, Merriweather, Poppins, Inter } from 'n
 import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import './visual-consistency.css';
+import '@/data/ai-tools';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeFavicon } from '@/components/theme-favicon';
 import { Navbar } from '@/components/navbar';
@@ -13,9 +14,6 @@ import { SiteAnnouncement } from '@/components/site-announcement';
 import { ToastProvider } from '@/components/toast-provider';
 import { PageTransition } from '@/components/page-transition';
 
-// Apply the browser-saved appearance before React hydrates. The preference is
-// intentionally client-owned so navigating between pages cannot reset it from
-// a stale server value.
 const appearanceBootstrap = `(() => {
   try {
     const root = document.documentElement;
@@ -26,16 +24,13 @@ const appearanceBootstrap = `(() => {
     const radius = get('novatools-radius');
     const scale = get('novatools-ui-scale');
     const motion = get('novatools-motion');
-
     if (colorTheme) root.setAttribute('data-theme', colorTheme === 'custom' ? 'gold' : colorTheme);
     if (theme) root.classList.toggle('dark', theme === 'dark');
     if (font) root.setAttribute('data-font', font);
     if (radius) root.setAttribute('data-radius', radius);
     if (scale) root.setAttribute('data-ui-scale', scale);
     if (motion) root.setAttribute('data-motion', motion);
-  } catch {
-    // The ThemeProvider supplies defaults when browser storage is unavailable.
-  }
+  } catch {}
 })();`;
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['500', '600', '700', '800'], variable: '--font-playfair', display: 'swap' });
@@ -60,11 +55,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const fontVars = `${playfair.variable} ${spaceGrotesk.variable} ${merriweather.variable} ${poppins.variable} ${inter.variable}`;
   return (
-    <ClerkProvider
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-      appearance={{ variables: { colorPrimary: '#C9A961' } }}
-    >
+    <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up" appearance={{ variables: { colorPrimary: '#C9A961' } }}>
       <html lang="en" className={fontVars} suppressHydrationWarning>
         <body className="flex min-h-screen flex-col bg-noise">
           <script dangerouslySetInnerHTML={{ __html: appearanceBootstrap }} />
