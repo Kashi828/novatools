@@ -4,7 +4,7 @@
 [data-font='classic']{--font-body-active:var(--font-inter)}
 :root,[data-theme='gold'],[data-theme='emerald'],[data-theme='sapphire'],[data-theme='rose'],[data-theme='monochrome']{--color-secondary-400:var(--color-primary-400);--color-secondary-500:var(--color-primary-500);--color-secondary-600:var(--color-primary-600);--color-grad-3:var(--color-primary-700)}
 .text-secondary-300,.text-secondary-400,.text-secondary-500,.text-secondary-600{color:rgb(var(--color-primary-500))!important}.text-secondary-300{color:rgb(var(--color-primary-400))!important}
-.border-secondary-500\/15,.border-secondary-500\/20{border-color:rgb(var(--color-primary-500)/.2)!important}.hover\\:border-secondary-500\\/20:hover{border-color:rgb(var(--color-primary-500)/.35)!important}
+.border-secondary-500\/15,.border-secondary-500\/20{border-color:rgb(var(--color-primary-500)/.2)!important}
 .bg-gradient-brand,.bg-gradient-premium{background-image:linear-gradient(135deg,rgb(var(--color-primary-400)) 0%,rgb(var(--color-primary-500)) 52%,rgb(var(--color-primary-700)) 100%)!important}
 .nova-gradient-text{background-image:linear-gradient(120deg,rgb(var(--color-primary-400)),rgb(var(--color-primary-500)) 58%,rgb(var(--color-primary-700)))}
 header nav[aria-label='Primary navigation'] a:not([class*='bg-primary']){color:rgb(var(--color-text-secondary))!important;background:transparent}
