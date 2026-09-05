@@ -31,6 +31,14 @@
   .nova-title { color:transparent; background:linear-gradient(135deg,var(--logo-grad-1) 0%,var(--logo-grad-2) 48%,var(--logo-grad-3) 100%); background-clip:text; -webkit-background-clip:text; }
 }
 
+html.theme-color-transition *,
+html.theme-color-transition *::before,
+html.theme-color-transition *::after {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow, outline-color, text-decoration-color, accent-color !important;
+  transition-duration: 260ms !important;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
 html[data-radius='pill'] :is(.h-8,.h-9,.h-10,.h-11,.h-12)[class*='rounded'] { border-radius:9999px; }
 html[data-ui-scale='compact'] { font-size:14px; }
 html[data-ui-scale='comfortable'] { font-size:16px; }

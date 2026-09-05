@@ -30,6 +30,17 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
+let colorTransitionTimer: number | undefined;
+function startColorTransition() {
+  if (typeof window === 'undefined') return;
+  const root = document.documentElement;
+  if (root.dataset.motion === 'reduced' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  root.classList.remove('theme-color-transition');
+  void root.offsetWidth;
+  root.classList.add('theme-color-transition');
+  if (colorTransitionTimer) window.clearTimeout(colorTransitionTimer);
+  colorTransitionTimer = window.setTimeout(() => root.classList.remove('theme-color-transition'), 300);
+}
 function writeCookie(key: string, value: string) { document.cookie = `${key}=${encodeURIComponent(value)}; Path=/; Max-Age=31536000; SameSite=Lax`; }
 function applyCustomColors(colors: CustomColors) {
   const root = document.documentElement; const primary = derivePrimaryRamp(colors.primary); const secondary = deriveSecondaryRamp(colors.secondary); const accent = deriveAccentRamp(colors.accent);
@@ -57,8 +68,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => { if (!ready) return; document.documentElement.setAttribute('data-card-density', cardDensity); localStorage.setItem('novatools-card-density', cardDensity); writeCookie('novatools-card-density', cardDensity); }, [cardDensity, ready]);
   useEffect(() => { if (!ready) return; document.documentElement.classList.toggle('dark', theme === 'dark'); localStorage.setItem('novatools-theme', theme); writeCookie('novatools-theme', theme); }, [theme, ready]);
   useEffect(() => { if (!ready) return; document.documentElement.setAttribute('data-theme', colorTheme === 'custom' ? 'gold' : colorTheme); localStorage.setItem('novatools-color-theme', colorTheme); writeCookie('novatools-color-theme', colorTheme); if (colorTheme === 'custom') applyCustomColors(customColors); else clearCustomColors(); }, [colorTheme, customColors, ready]);
-  function setColorTheme(t: ColorTheme) { localStorage.setItem('novatools-color-theme', t); writeCookie('novatools-color-theme', t); document.documentElement.setAttribute('data-theme', t === 'custom' ? 'gold' : t); if (t === 'custom') applyCustomColors(customColors); else clearCustomColors(); setColorThemeState(t); }
-  function setCustomColors(c: CustomColors) { setCustomColorsState(c); localStorage.setItem('novatools-custom-colors', JSON.stringify(c)); writeCookie('novatools-custom-colors', JSON.stringify(c)); if (colorTheme === 'custom') applyCustomColors(c); }
+  function setColorTheme(t: ColorTheme) { startColorTransition(); localStorage.setItem('novatools-color-theme', t); writeCookie('novatools-color-theme', t); document.documentElement.setAttribute('data-theme', t === 'custom' ? 'gold' : t); if (t === 'custom') applyCustomColors(customColors); else clearCustomColors(); setColorThemeState(t); }
+  function setCustomColors(c: CustomColors) { startColorTransition(); setCustomColorsState(c); localStorage.setItem('novatools-custom-colors', JSON.stringify(c)); writeCookie('novatools-custom-colors', JSON.stringify(c)); if (colorTheme === 'custom') applyCustomColors(c); }
   function toggleTheme() { setTheme((current) => { const next = current === 'dark' ? 'light' : 'dark'; document.documentElement.classList.toggle('dark', next === 'dark'); localStorage.setItem('novatools-theme', next); writeCookie('novatools-theme', next); return next; }); }
   if (!ready) return null;
   return <ThemeContext.Provider value={{ theme, toggleTheme, colorTheme, setColorTheme, customColors, setCustomColors, fontPairing, setFontPairing: setFontPairingState, radiusStyle, setRadiusStyle: setRadiusStyleState, uiScale, setUiScale: setUiScaleState, motionPreference, setMotionPreference: setMotionPreferenceState, contrastPreference, setContrastPreference: setContrastPreferenceState, surfaceStyle, setSurfaceStyle: setSurfaceStyleState, cardDensity, setCardDensity: setCardDensityState }}>{children}</ThemeContext.Provider>;
