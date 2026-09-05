@@ -1,14 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ShieldAlert, MessageSquare, Wrench, UsersRound, SlidersHorizontal } from 'lucide-react';
+import { ShieldAlert, MessageSquare, Wrench, UsersRound, SlidersHorizontal, Activity } from 'lucide-react';
 import { isAdminUser } from '@/lib/admin';
 import { listComments } from '@/lib/comments';
 import { tools } from '@/data/tools';
+import '@/data/ai-tools';
+import '@/data/extra-tools';
 import { getSiteSettings } from '@/lib/site-settings';
 import { AdminCommentsPanel } from '@/components/admin-comments-panel';
 import { AdminToolsPanel } from '@/components/admin-tools-panel';
 import { AdminPromoPanel } from '@/components/admin-promo-panel';
 import { AdminOperationsPanel } from '@/components/admin-operations-panel';
+import { AdminMonitorPanel } from '@/components/admin-monitor-panel';
 
 export const metadata: Metadata = {
   title: 'Admin',
@@ -32,28 +35,33 @@ export default async function AdminPage() {
   const [comments, settings] = await Promise.all([listComments(), getSiteSettings()]);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
       <span className="inline-flex rounded-full bg-primary-500/10 px-3 py-1 text-xs font-semibold text-primary-600 dark:text-primary-400">NovaTools control room</span>
       <h1 className="mt-3 font-heading text-3xl font-bold sm:text-4xl">Admin</h1>
-      <p className="mt-2 text-black/60 dark:text-white/60">Manage what visitors see, moderate feedback, and keep the catalogue tidy—without editing code for routine work.</p>
+      <p className="mt-2 text-black/60 dark:text-white/60">Manage the public experience, moderate feedback, operate the tool catalogue, and monitor the site from one protected workspace.</p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl2 border border-black/10 bg-black/[0.02] p-5 dark:border-white/10 dark:bg-white/5"><div className="font-heading text-3xl font-bold">{tools.length}</div><div className="text-sm text-black/50 dark:text-white/50">Registered tools</div></div>
-        <div className="rounded-xl2 border border-black/10 bg-black/[0.02] p-5 dark:border-white/10 dark:bg-white/5"><div className="font-heading text-3xl font-bold">{comments.length}</div><div className="text-sm text-black/50 dark:text-white/50">Comments posted</div></div>
-        <div className="rounded-xl2 border border-black/10 bg-black/[0.02] p-5 dark:border-white/10 dark:bg-white/5"><div className={`font-heading text-lg font-bold ${settings.promoEnabled ? 'text-success' : 'text-black/60 dark:text-white/60'}`}>{settings.promoEnabled ? 'ON' : 'OFF'}</div><div className="text-sm text-black/50 dark:text-white/50">Promo mode</div></div>
+        <div className="nova-surface rounded-xl2 p-5"><div className="font-heading text-3xl font-bold">{tools.length}</div><div className="text-sm nova-muted">Registered tools</div></div>
+        <div className="nova-surface rounded-xl2 p-5"><div className="font-heading text-3xl font-bold">{comments.length}</div><div className="text-sm nova-muted">Comments posted</div></div>
+        <div className="nova-surface rounded-xl2 p-5"><div className={`font-heading text-lg font-bold ${settings.promoEnabled ? 'text-success' : 'nova-muted'}`}>{settings.promoEnabled ? 'ON' : 'OFF'}</div><div className="text-sm nova-muted">Promo mode</div></div>
+      </div>
+
+      <div className="mt-10 rounded-3xl border border-primary-500/15 bg-primary-500/5 p-5 sm:p-7">
+        <div className="mb-5 flex items-center gap-2"><Activity className="h-5 w-5 text-primary-500" /><div><h2 className="font-heading text-xl font-semibold">Operations & monitoring</h2><p className="mt-1 text-sm nova-muted">Live infrastructure checks, environment readiness, catalogue health, and category distribution.</p></div></div>
+        <AdminMonitorPanel />
       </div>
 
       <div className="mt-10"><AdminPromoPanel /></div>
 
       <div className="mt-10">
         <h2 className="mb-3 flex items-center gap-2 font-heading text-lg font-semibold"><SlidersHorizontal className="h-4 w-4" /> Advanced catalogue operations</h2>
-        <p className="mb-4 text-sm text-black/60 dark:text-white/60">Search the full registry, filter by category or status, bulk show/hide matching tools, refresh visibility state, and export the catalogue for backup or planning.</p>
+        <p className="mb-4 text-sm nova-muted">Search the full registry, filter by category or status, bulk show/hide matching tools, refresh visibility state, and export the catalogue for backup or planning.</p>
         <AdminOperationsPanel />
       </div>
 
       <div className="mt-10">
         <h2 className="mb-3 flex items-center gap-2 font-heading text-lg font-semibold"><Wrench className="h-4 w-4" /> Tool catalogue</h2>
-        <p className="mb-4 text-sm text-black/60 dark:text-white/60">Hide a tool during maintenance or show it again when it is ready. Hidden tools disappear from public discovery, search, and category listings.</p>
+        <p className="mb-4 text-sm nova-muted">Hide a tool during maintenance or show it again when it is ready. Hidden tools disappear from public discovery, search, and category listings.</p>
         <AdminToolsPanel />
       </div>
 
@@ -64,7 +72,7 @@ export default async function AdminPage() {
 
       <div className="mt-10 rounded-xl2 border border-primary-400/30 bg-primary-50/50 p-5 dark:bg-primary-500/5">
         <h2 className="flex items-center gap-2 font-heading text-lg font-semibold"><UsersRound className="h-4 w-4 text-primary-500" /> Members and subscriptions</h2>
-        <p className="mt-2 text-sm text-black/60 dark:text-white/60">The site now owns day-to-day promotion and catalogue controls. Subscription billing still uses Clerk&apos;s secure payment infrastructure; the next upgrade should add an in-app member directory and plan actions through Clerk&apos;s server API, so private billing credentials never reach the browser.</p>
+        <p className="mt-2 text-sm nova-muted">Subscription billing still uses Clerk&apos;s secure payment infrastructure. Keep private billing credentials server-side and use the protected admin workspace for operational controls.</p>
       </div>
     </div>
   );
