@@ -41,10 +41,8 @@ function cleanFiles(value: unknown): IncomingFile[] {
   });
 }
 
-function identityKey(userId: string | null, request: Request) {
-  if (userId) return `user:${userId}`;
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'anonymous';
-  return `ip:${createHash('sha256').update(ip).digest('hex').slice(0, 24)}`;
+function identityKey(userId: string, request: Request) {
+  return `user:${userId}`;
 }
 
 function filePart(file: IncomingFile): GeminiPart {
@@ -58,10 +56,12 @@ export async function POST(request: Request) {
 
   try {
     const user = await currentUser();
+    if (!user) return NextResponse.json({ error: 'Please sign in to use Nova AI.', requiresLogin: true }, { status: 401 });
+
     const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase();
-    const primaryEmail = user?.emailAddresses.find((e) => e.id === user.primaryEmailAddressId)?.emailAddress?.toLowerCase();
+    const primaryEmail = user.emailAddresses.find((e) => e.id === user.primaryEmailAddressId)?.emailAddress?.toLowerCase();
     const isAdmin = Boolean(adminEmail && primaryEmail && adminEmail === primaryEmail);
-    const identifier = identityKey(user?.id || null, request);
+    const identifier = identityKey(user.id, request);
     const body = await request.json();
     const messages = cleanMessages(body?.messages);
     const files = cleanFiles(body?.files);
