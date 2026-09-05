@@ -2,14 +2,14 @@ import Link from 'next/link';
 import { ArrowRight, Calculator, Code2, FileText, Image as ImageIcon, Palette, Repeat, ShieldCheck, Type } from 'lucide-react';
 
 const suites = [
-  { href: '/converters', label: 'Converter', description: 'Units, data, fuel economy, and everyday conversions.', meta: '11 conversion modes', icon: Repeat },
-  { href: '/pdf-tools', label: 'PDF Tools', description: 'Manage pages, inspect documents, and handle PDF workflows.', meta: 'PDF workspace', icon: FileText },
-  { href: '/categories/image', label: 'Image Tools', description: 'Compress, resize, convert, and prepare images quickly.', meta: 'Image workspace', icon: ImageIcon },
-  { href: '/categories/text', label: 'Text Tools', description: 'Count, clean, transform, and format text in seconds.', meta: 'Text workspace', icon: Type },
-  { href: '/categories/developer', label: 'Developer Tools', description: 'Format, encode, validate, debug, and transform data.', meta: 'Developer workspace', icon: Code2 },
-  { href: '/categories/calculators', label: 'Calculators', description: 'Practical calculators for everyday and technical work.', meta: 'Calculator workspace', icon: Calculator },
-  { href: '/categories/security', label: 'Security Tools', description: 'Useful local utilities for hashes, passwords, and checks.', meta: 'Security workspace', icon: ShieldCheck },
-  { href: '/categories/color', label: 'Color Tools', description: 'Pick, convert, compare, and build colors and palettes.', meta: 'Color workspace', icon: Palette },
+  { href: '/toolkits/converters', label: 'Converter Toolkit', description: 'Units, currency, time zones, file sizes, and data conversions in one workspace.', meta: '10+ functions', icon: Repeat },
+  { href: '/toolkits/pdf', label: 'PDF Toolkit', description: 'Merge, split, compress, convert, reorder, rotate, and inspect PDFs.', meta: '6+ functions', icon: FileText },
+  { href: '/toolkits/image', label: 'Image Toolkit', description: 'Compress, convert, resize, batch-process, and prepare images.', meta: '6+ functions', icon: ImageIcon },
+  { href: '/toolkits/text', label: 'Text Toolkit', description: 'Count, clean, sort, compare, transform, and inspect text.', meta: '7+ functions', icon: Type },
+  { href: '/toolkits/developer', label: 'Developer Toolkit', description: 'JSON, URLs, regex, markup, Markdown, CSV, and developer utilities.', meta: '12+ functions', icon: Code2 },
+  { href: '/toolkits/calculators', label: 'Calculator Toolkit', description: 'Math, date, percentage, scientific, and everyday calculators.', meta: '10+ functions', icon: Calculator },
+  { href: '/toolkits/security', label: 'Security Toolkit', description: 'Passwords, passphrases, hashes, UUIDs, Base64, and hex tools.', meta: '8+ functions', icon: ShieldCheck },
+  { href: '/toolkits/web', label: 'Web Toolkit', description: 'QR, SEO, UTM, metadata, sitemap, slug, and favicon helpers.', meta: '11+ functions', icon: Palette },
 ];
 
 export function ToolSuites({ compact = false }: { compact?: boolean }) {
