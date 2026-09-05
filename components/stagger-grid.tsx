@@ -3,24 +3,11 @@
 import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06 } },
-};
+const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
+const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } } };
 
-const item = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
-};
-
-/** Cascading/waterfall entrance: children fade+slide in one after another instead of
- * all at once. Wrap a grid's children each in <StaggerItem>. */
 export function StaggerGrid({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }} variants={container} className={className}>
-      {children}
-    </motion.div>
-  );
+  return <motion.div initial="hidden" animate="show" variants={container} className={className}>{children}</motion.div>;
 }
 
 export function StaggerItem({ children }: { children: ReactNode }) {
