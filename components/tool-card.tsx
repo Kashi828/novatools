@@ -4,10 +4,13 @@ import type { ToolDefinition } from '@/data/types';
 import { getCategory } from '@/data/categories';
 import { CardHoverWrapper, IconHoverWrapper } from '@/components/tool-card-motion';
 
+const FREE_PREMIUM_SLUGS = new Set(['batch-image-processor', 'qr-batch-generator']);
+
 export function ToolCard({ tool }: { tool: ToolDefinition }) {
   const category = getCategory(tool.category);
+  const isPremium = Boolean(tool.premium) && !FREE_PREMIUM_SLUGS.has(tool.slug);
   const badge = tool.component
-    ? tool.premium ? { label: 'Premium', className: 'bg-gradient-premium text-white shadow-glow-gold' }
+    ? isPremium ? { label: 'Premium', className: 'bg-gradient-premium text-white shadow-glow-gold' }
       : tool.isNew ? { label: 'New', className: 'bg-success/15 text-success' }
       : null
     : { label: 'Soon', className: 'bg-warning/15 text-warning' };
