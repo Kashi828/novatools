@@ -1,7 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import { Check, Contrast, Eye, Gauge, Monitor, Palette, RotateCcw, Sparkles, Type, WandSparkles } from 'lucide-react';
+import { Check, Eye, Gauge, Monitor, Palette, RotateCcw, Sparkles, Type, WandSparkles } from 'lucide-react';
 import { useTheme, type ColorTheme, type FontPairing, type RadiusStyle, type UiScale, type MotionPreference, type ContrastPreference, type SurfaceStyle, type CardDensity } from '@/components/theme-provider';
 
 const colors: Array<{ id: ColorTheme; label: string; swatch: string }> = [
@@ -19,7 +18,6 @@ const fonts: Array<{ id: FontPairing; label: string; sample: string }> = [
   { id: 'classic', label: 'Classic', sample: 'Merriweather + Inter' },
   { id: 'rounded', label: 'Rounded', sample: 'Poppins + Inter' },
 ];
-
 const radii: Array<{ id: RadiusStyle; label: string }> = [
   { id: 'sharp', label: 'Sharp' }, { id: 'rounded', label: 'Rounded' }, { id: 'pill', label: 'Pill' },
 ];
@@ -53,22 +51,7 @@ function ChoiceCard({ selected, onClick, children, detail }: { selected: boolean
 }
 
 export default function CustomizePage() {
-  const { theme, toggleTheme, colorTheme, setColorTheme, customColors, setCustomColors, fontPairing, setFontPairing, radiusStyle, setRadiusStyle, uiScale, setUiScale, motionPreference, setMotionPreference, contrastPreference, setContrastPreference, surfaceStyle, setSurfaceStyle, cardDensity, setCardDensity } = useTheme();
-
-  function reset() {
-    document.documentElement.classList.remove('dark');
-    localStorage.setItem('novatools-theme', 'light');
-    setColorTheme('gold');
-    setFontPairing('elegant');
-    setRadiusStyle('rounded');
-    setUiScale('comfortable');
-    setMotionPreference('full');
-    setContrastPreference('standard');
-    setSurfaceStyle('clean');
-    setCardDensity('relaxed');
-    setCustomColors({ primary: '#C9A961', secondary: '#A97142', accent: '#6B7280' });
-    window.location.reload();
-  }
+  const { theme, toggleTheme, resetPreferences, colorTheme, setColorTheme, customColors, setCustomColors, fontPairing, setFontPairing, radiusStyle, setRadiusStyle, uiScale, setUiScale, motionPreference, setMotionPreference, contrastPreference, setContrastPreference, surfaceStyle, setSurfaceStyle, cardDensity, setCardDensity } = useTheme();
 
   return <main className="min-h-[calc(100vh-4rem)] bg-noise">
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
@@ -112,7 +95,7 @@ export default function CustomizePage() {
             <h3 className="mb-3 mt-6 text-sm font-semibold">Background surface</h3><div className="grid gap-3 sm:grid-cols-2">{surfaces.map(item => <ChoiceCard key={item.id} selected={surfaceStyle === item.id} onClick={() => setSurfaceStyle(item.id)} detail={item.detail}>{item.label}</ChoiceCard>)}</div>
           </section>
 
-          <div className="flex justify-end"><button type="button" onClick={reset} className="inline-flex items-center gap-2 rounded-xl border border-black/10 px-4 py-2.5 text-sm font-semibold transition hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"><RotateCcw className="h-4 w-4" /> Reset preferences</button></div>
+          <div className="flex justify-end"><button type="button" onClick={resetPreferences} className="inline-flex items-center gap-2 rounded-xl border border-black/10 px-4 py-2.5 text-sm font-semibold transition hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"><RotateCcw className="h-4 w-4" /> Reset preferences</button></div>
         </div>
 
         <aside className="h-fit rounded-2xl border border-black/[0.08] bg-white/80 p-5 shadow-sm dark:border-white/[0.09] dark:bg-white/[0.025] lg:sticky lg:top-24">

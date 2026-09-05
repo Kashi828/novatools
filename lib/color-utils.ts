@@ -1,11 +1,23 @@
 /** Small color-math helpers for deriving a full tint/shade ramp from one base color,
  * so a "fully custom theme" only requires the user to pick 3 colors (primary,
- * secondary, accent) rather than every single shade used across the site. */
+ * secondary, accent) rather than every single shade used across the site.
+ */
+
+const HEX_PATTERN = /^#[0-9a-fA-F]{6}$/;
+
+export function normalizeHex(value: string): string | null {
+  const normalized = value.trim().startsWith('#') ? value.trim() : `#${value.trim()}`;
+  return HEX_PATTERN.test(normalized) ? normalized.toUpperCase() : null;
+}
+
+export function isValidHex(value: string): boolean {
+  return normalizeHex(value) !== null;
+}
 
 function hexToHsl(hex: string) {
-  const clean = hex.replace('#', '');
-  const full = clean.length === 3 ? clean.split('').map((c) => c + c).join('') : clean;
-  const bigint = parseInt(full, 16);
+  const normalized = normalizeHex(hex) ?? '#C9A961';
+  const clean = normalized.slice(1);
+  const bigint = parseInt(clean, 16);
   const r = ((bigint >> 16) & 255) / 255;
   const g = ((bigint >> 8) & 255) / 255;
   const b = (bigint & 255) / 255;
@@ -45,8 +57,7 @@ function hslToRgbString(h: number, s: number, l: number) {
   return `${toByte(r)} ${toByte(g)} ${toByte(b)}`;
 }
 
-/** Given a base hex color, returns the shade ramp as "R G B" strings (matching the
- * space-separated format our CSS custom properties expect for the alpha-value modifier). */
+/** Given a base hex color, returns the shade ramp as "R G B" strings. */
 export function derivePrimaryRamp(baseHex: string) {
   const { h, s } = hexToHsl(baseHex);
   return {
