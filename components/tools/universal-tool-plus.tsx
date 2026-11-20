@@ -1,7 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { Check, Copy, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { Sparkles } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ToolShell } from '@/components/tool-shell';
 import { Button } from '@/components/ui/button';
@@ -58,13 +58,13 @@ function runTool(slug:string,input:string){
 
 export function UniversalToolPlus(){
   const pathname=usePathname();const slug=pathname.split('/').filter(Boolean).pop()||'trim-lines';const config=CONFIG[slug]||CONFIG['trim-lines'];
-  const [input,setInput]=useState('');const [r,setR]=useState('');const [g,setG]=useState('');const [b,setB]=useState('');const [out,setOut]=useState('');const [copied,setCopied]=useState(false);
-  const output=useMemo(()=>config.mode==='rgb'?out:runTool(slug,input),[config.mode,input,slug,out]);
-  const execute=()=>{let value:string;if(config.mode==='rgb'){const parts=[Number(r),Number(g),Number(b)];value=parts.every(Number.isFinite)&&parts.every(n=>n>=0&&n<=255)?'#'+parts.map(n=>Math.round(n).toString(16).padStart(2,'0')).join('').toUpperCase():'Enter R, G and B values from 0 to 255.';}else{value=runTool(slug,input);}setOut(value);setCopied(false);};
+  const [input,setInput]=useState('');const [r,setR]=useState('');const [g,setG]=useState('');const [b,setB]=useState('');const [out,setOut]=useState('');
+  const output=out;
+  const execute=()=>{let value:string;if(config.mode==='rgb'){const parts=[Number(r),Number(g),Number(b)];value=parts.every(Number.isFinite)&&parts.every(n=>n>=0&&n<=255)?'#'+parts.map(n=>Math.round(n).toString(16).padStart(2,'0')).join('').toUpperCase():'Enter R, G and B values from 0 to 255.';}else{value=runTool(slug,input);}setOut(value);};
   return <ToolShell outputValue={output||undefined} onReset={()=>{setInput('');setOut('');setR('');setG('');setB('');}} shareSlug={slug}>
     <div className="rounded-2xl border border-primary-500/15 bg-primary-500/5 p-5"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-500/10 text-primary-500"><Sparkles className="h-5 w-5"/></div><div><h2 className="font-semibold">{config.title}</h2><p className="text-xs text-secondary-400">{config.description}</p></div></div></div>
     {config.mode==='rgb'?<div className="grid gap-3 sm:grid-cols-3">{[r,g,b].map((v,i)=><input key={i} type="number" min="0" max="255" value={v} onChange={e=>[setR,setG,setB][i](e.target.value)} placeholder={['Red','Green','Blue'][i]} className="rounded-xl border border-current/10 bg-[rgb(var(--surface-page)/.6)] px-4 py-3 text-sm outline-none focus:border-primary-500/40"/>)}</div>:<textarea value={input} onChange={e=>setInput(e.target.value)} rows={12} placeholder={config.placeholder} className="w-full rounded-2xl border border-current/10 bg-[rgb(var(--surface-page)/.6)] p-4 text-sm leading-6 outline-none focus:border-primary-500/40"/>}
     <textarea value={output} readOnly rows={12} placeholder="Result will appear here..." className="w-full rounded-2xl border border-current/10 bg-[rgb(var(--surface-page)/.45)] p-4 text-sm leading-6 outline-none"/>
-    <div className="flex gap-3"><Button onClick={execute}>Run tool</Button>{output&&<Button variant="outline" onClick={()=>{void navigator.clipboard?.writeText(output);setCopied(true);}}>{copied?<Check className="h-4 w-4"/>:<Copy className="h-4 w-4"/>}{copied?'Copied':'Copy result'}</Button>}</div>
+    <div className="flex gap-3"><Button onClick={execute}>Run tool</Button></div>
   </ToolShell>;
 }
