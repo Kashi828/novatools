@@ -256,12 +256,12 @@ html.dark .nova-category-icon { color:var(--ect-accent); }
 .rounded-2xl,.rounded-xl2,.rounded-xl,.rounded-lg { border-radius:0!important; }
 .shadow-glass { box-shadow:0 9px 24px -20px rgba(17,19,21,.3); }
 .nova-gradient-text,.nova-title,.text-gradient { background-image:none!important; background-clip:initial!important; color:var(--ect-ink)!important; }
-.text-primary-400,.text-primary-500,.text-primary-600,.dark\\:text-primary-400 { color:#72890e!important; }
-html.dark .text-primary-400,html.dark .text-primary-500,html.dark .text-primary-600,html.dark .dark\\:text-primary-400 { color:var(--ect-accent)!important; }
-.bg-primary-600,.hover\\:bg-primary-700:hover { background:var(--ect-accent)!important; color:#111315!important; }
-.bg-primary-500\\/10,.bg-primary-500\\/15,.bg-primary-50 { background:rgba(186,240,0,.12)!important; }
-.border-primary-500\\/15,.border-primary-400\\/30,.border-primary-500\\/20 { border-color:rgba(145,190,0,.32)!important; }
-.hover\\:border-primary-400\\/50:hover,.hover\\:border-primary-500\\/20:hover { border-color:rgba(145,190,0,.55)!important; }
+.text-primary-400,.text-primary-500,.text-primary-600,.dark\:text-primary-400 { color:#72890e!important; }
+html.dark .text-primary-400,html.dark .text-primary-500,html.dark .text-primary-600,html.dark .dark\:text-primary-400 { color:var(--ect-accent)!important; }
+.bg-primary-600,.hover\:bg-primary-700:hover { background:var(--ect-accent)!important; color:#111315!important; }
+.bg-primary-500\/10,.bg-primary-500\/15,.bg-primary-50 { background:rgba(186,240,0,.12)!important; }
+.border-primary-500\/15,.border-primary-400\/30,.border-primary-500\/20 { border-color:rgba(145,190,0,.32)!important; }
+.hover\:border-primary-400\/50:hover,.hover\:border-primary-500\/20:hover { border-color:rgba(145,190,0,.55)!important; }
 .bg-gradient-brand,.bg-gradient-premium { background:var(--ect-dark)!important; color:#f4f5ef; }
 .font-heading { font-family:var(--ect-font-display)!important; }
 .font-body { font-family:var(--ect-font-body)!important; }
