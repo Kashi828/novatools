@@ -13,7 +13,7 @@ const links = [
   { href: '/nova-ai', label: 'Nova AI', icon: Sparkles },
 ];
 
-export function Navbar() {
+export function Navbar({ authEnabled }: { authEnabled: boolean }) {
   const [open, setOpen] = useState(false);
   const [promoEnabled, setPromoEnabled] = useState(true);
   const pathname = usePathname();
@@ -85,7 +85,7 @@ export function Navbar() {
           <div className="ect-nav-actions">
             <Link href="/tools#search" aria-label="Search tools" className="ect-nav-action"><Search className="h-4 w-4" /></Link>
             <Link href="/customize" aria-label="Customize NovaTools" className="ect-nav-action ect-nav-customize"><Settings2 className="h-4 w-4" /><span>Customize</span></Link>
-            {process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY ? <AuthActions promoEnabled={promoEnabled} /> : null}
+            {authEnabled ? <AuthActions promoEnabled={promoEnabled} /> : null}
           </div>
         </div>
       </nav>
