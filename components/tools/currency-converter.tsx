@@ -52,7 +52,7 @@ export function CurrencyConverter() {
   const result = useMemo(() => {
     const amt = Number(amount);
     const rate = data?.rates[to];
-    if (!data || !Number.isFinite(amt) || !Number.isFinite(rate)) return null;
+    if (!data || !Number.isFinite(amt) || typeof rate !== 'number' || !Number.isFinite(rate)) return null;
     return amt * rate;
   }, [amount, data, to]);
 
