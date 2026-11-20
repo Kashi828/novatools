@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, ShieldCheck, Sparkles, WandSparkles } from 'lucide-react';
 import { getFeaturedTools, getNewTools, getTrendingTools, tools } from '@/data/tools';
+import '@/data/extra-tools';
 import { categories } from '@/data/categories';
 import { getHiddenSlugs } from '@/lib/tool-visibility';
 import { HomeMotion } from '@/components/home/home-motion';
