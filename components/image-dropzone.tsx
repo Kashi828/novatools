@@ -10,12 +10,20 @@ interface ImageDropzoneProps {
 
 export function ImageDropzone({ onFile, accept = 'image/*' }: ImageDropzoneProps) {
   const [dragging, setDragging] = useState(false);
+  const [error, setError] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFiles = useCallback(
     (files: FileList | null) => {
       const file = files?.[0];
-      if (file) onFile(file);
+      if (!file) return;
+      const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|svg|avif|heic)$/i.test(file.name);
+      if (!isImage) {
+        setError('Please choose a valid image file.');
+        return;
+      }
+      setError('');
+      onFile(file);
     },
     [onFile]
   );
@@ -40,12 +48,16 @@ export function ImageDropzone({ onFile, accept = 'image/*' }: ImageDropzoneProps
       <UploadCloud className="h-8 w-8 text-black/30 dark:text-white/30" />
       <p className="text-sm font-medium">Drop an image here, or click to browse</p>
       <p className="text-xs text-black/40 dark:text-white/40">Processed entirely in your browser — nothing is uploaded</p>
+      {error && <p role="alert" className="text-xs text-danger">{error}</p>}
       <input
         ref={inputRef}
         type="file"
         accept={accept}
         className="hidden"
-        onChange={(e) => handleFiles(e.target.files)}
+        onChange={(e) => {
+          handleFiles(e.target.files);
+          e.currentTarget.value = '';
+        }}
       />
     </div>
   );
