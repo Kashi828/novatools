@@ -17,7 +17,6 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [promoEnabled, setPromoEnabled] = useState(true);
   const pathname = usePathname();
-  const { isLoaded, isSignedIn } = useAuth();
 
   useEffect(() => {
     fetch('/api/site-settings')
@@ -28,7 +27,6 @@ export function Navbar() {
       .catch(() => undefined);
   }, []);
 
-  const authReady = isLoaded;
   const active = (href: string) => pathname === href || pathname.startsWith(href + '/');
 
   return (
@@ -87,10 +85,21 @@ export function Navbar() {
           <div className="ect-nav-actions">
             <Link href="/tools#search" aria-label="Search tools" className="ect-nav-action"><Search className="h-4 w-4" /></Link>
             <Link href="/customize" aria-label="Customize NovaTools" className="ect-nav-action ect-nav-customize"><Settings2 className="h-4 w-4" /><span>Customize</span></Link>
-            {authReady && isSignedIn ? <UserButton /> : authReady && !promoEnabled ? <Link href="/sign-in" prefetch={false} className="ect-signin">Sign in</Link> : null}
+            {process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY ? <AuthActions promoEnabled={promoEnabled} /> : null}
           </div>
         </div>
       </nav>
     </>
   );
+}
+
+
+function AuthActions({ promoEnabled }: { promoEnabled: boolean }) {
+  const { isLoaded, isSignedIn } = useAuth();
+  if (!isLoaded) return null;
+  return isSignedIn
+    ? <UserButton />
+    : !promoEnabled
+      ? <Link href="/sign-in" prefetch={false} className="ect-signin">Sign in</Link>
+      : null;
 }
