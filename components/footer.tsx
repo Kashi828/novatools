@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { categories } from '@/data/categories';
 import { isAdminUser } from '@/lib/admin';
@@ -6,58 +7,40 @@ import { isAdminUser } from '@/lib/admin';
 export async function Footer() {
   const isAdmin = await isAdminUser();
   return (
-    <footer className="border-t border-black/5 bg-black/[0.02] dark:border-white/10 dark:bg-white/[0.02]">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-4">
-          <div>
-            <Link href="/" className="flex items-center gap-2 font-heading text-lg font-bold">
-              <Logo />
-              NovaTools
-            </Link>
-            <p className="mt-3 max-w-xs text-sm text-black/60 dark:text-white/60">
-              Free online tools that save you time. No installation needed — most tools require no account at all.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="mb-3 text-sm font-semibold">Categories</h4>
-            <ul className="space-y-2 text-sm text-black/60 dark:text-white/60">
-              {categories.slice(0, 5).map((c) => (
-                <li key={c.slug}>
-                  <Link href={`/categories/${c.slug}`} className="hover:text-primary-500">
-                    {c.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="mb-3 text-sm font-semibold">Company</h4>
-            <ul className="space-y-2 text-sm text-black/60 dark:text-white/60">
-              <li><Link href="/about" className="hover:text-primary-500">About</Link></li>
-              <li><Link href="/feedback" className="hover:text-primary-500">Feedback</Link></li>
-              <li><Link href="/contact" className="hover:text-primary-500">Contact</Link></li>
-              <li><Link href="/tools" className="hover:text-primary-500">All Tools</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="mb-3 text-sm font-semibold">Legal</h4>
-            <ul className="space-y-2 text-sm text-black/60 dark:text-white/60">
-              <li><Link href="/privacy" className="hover:text-primary-500">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-primary-500">Terms of Service</Link></li>
-              {isAdmin && (
-                <li><Link href="/admin" className="hover:text-primary-500">Admin</Link></li>
-              )}
-            </ul>
-          </div>
+    <footer className="ect-site-footer">
+      <div className="ect-wrap ect-footer-grid">
+        <div>
+          <div className="ect-footer-code">NOVA / DIGITAL WORKSPACE / 2026</div>
+          <Link href="/" className="ect-footer-brand"><Logo className="h-9 w-9" /><span>NovaTools</span></Link>
+          <h2 className="ect-footer-title">Make the next<br /><em>thing easier.</em></h2>
+          <p className="ect-footer-copy">Free online tools that save you time. No installation needed — most tools require no account at all.</p>
         </div>
-
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-black/5 pt-6 text-xs text-black/50 dark:border-white/10 dark:text-white/50 sm:flex-row">
-          <p>© {new Date().getFullYear()} NovaTools. All rights reserved.</p>
-          <p>Built for speed. Runs entirely in your browser.</p>
+        <div className="ect-footer-column">
+          <span className="ect-footer-label">EXPLORE</span>
+          {categories.slice(0, 6).map((category) => <Link key={category.slug} href={`/categories/${category.slug}`}>{category.name}<ArrowUpRight className="h-3 w-3" /></Link>)}
         </div>
+        <div className="ect-footer-column">
+          <span className="ect-footer-label">PLATFORM</span>
+          <Link href="/tools">All tools<ArrowUpRight className="h-3 w-3" /></Link>
+          <Link href="/toolkits">Workspaces<ArrowUpRight className="h-3 w-3" /></Link>
+          <Link href="/nova-ai">Nova AI<ArrowUpRight className="h-3 w-3" /></Link>
+          <Link href="/about">About<ArrowUpRight className="h-3 w-3" /></Link>
+          <Link href="/feedback">Feedback<ArrowUpRight className="h-3 w-3" /></Link>
+          <Link href="/contact">Contact<ArrowUpRight className="h-3 w-3" /></Link>
+          {isAdmin && <Link href="/admin">Admin<ArrowUpRight className="h-3 w-3" /></Link>}
+        </div>
+        <div className="ect-footer-column">
+          <span className="ect-footer-label">INFORMATION</span>
+          <Link href="/pricing">Pricing<ArrowUpRight className="h-3 w-3" /></Link>
+          <Link href="/privacy">Privacy policy<ArrowUpRight className="h-3 w-3" /></Link>
+          <Link href="/terms">Terms of service<ArrowUpRight className="h-3 w-3" /></Link>
+          <Link href="/customize">Appearance settings<ArrowUpRight className="h-3 w-3" /></Link>
+        </div>
+      </div>
+      <div className="ect-wrap ect-footer-bottom">
+        <span>© {new Date().getFullYear()} NovaTools. All rights reserved.</span>
+        <span>OPEN → CREATE → COMPLETE</span>
+        <span>BUILT FOR SPEED. DESIGNED FOR CLARITY.</span>
       </div>
     </footer>
   );
