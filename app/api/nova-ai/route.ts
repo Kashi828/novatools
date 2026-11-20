@@ -51,6 +51,9 @@ function filePart(file: IncomingFile): GeminiPart {
 }
 
 export async function POST(request: Request) {
+  const clerkConfigured = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY);
+  if (!clerkConfigured) return NextResponse.json({ error: 'Nova AI is temporarily unavailable while sign-in is disabled.' }, { status: 503 });
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: 'Nova AI is not configured yet. Add GEMINI_API_KEY to the server environment.' }, { status: 503 });
 

@@ -51,7 +51,7 @@ const TASKS: Record<string, { title: string; prompt: string; placeholder: string
   'ai-prompt-builder': { title: 'Prompt builder', prompt: 'Turn the user goal into a strong reusable AI prompt with context, role, constraints, output format, and quality checks.', placeholder: 'Describe what you want an AI system to accomplish...' },
 };
 
-export function NovaAITool() {
+function NovaAIToolAuthenticated() {
   const pathname = usePathname();
   const slug = pathname.split('/').filter(Boolean).pop() || 'ai-summarizer';
   const task = TASKS[slug] || TASKS['ai-summarizer'];
@@ -93,4 +93,20 @@ export function NovaAITool() {
     {error && <p role="alert" className="rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-600 dark:text-red-400">{error}</p>}
     <Button onClick={() => void run()} disabled={!input.trim() || loading}>{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}{loading ? 'Working...' : 'Run with Nova AI'}</Button>
   </ToolShell>;
+}
+
+
+export function NovaAITool() {
+  const clerkConfigured = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+  if (!clerkConfigured) {
+    return (
+      <div className="rounded-2xl border border-current/10 bg-[rgb(var(--surface-panel)/.65)] p-6 text-center">
+        <Sparkles className="mx-auto h-8 w-8 text-primary-500" />
+        <h2 className="mt-3 text-lg font-semibold">Nova AI is temporarily unavailable</h2>
+        <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-secondary-400">Sign-in is currently disabled while the account system is being prepared. The regular NovaTools utilities remain available.</p>
+        <Link href="/tools" className="mt-4 inline-flex rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white">Explore available tools</Link>
+      </div>
+    );
+  }
+  return <NovaAIToolAuthenticated />;
 }

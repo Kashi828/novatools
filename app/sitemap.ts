@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { tools } from '@/data/tools';
+import '@/data/extra-tools';
 import { categories } from '@/data/categories';
 
 const SITE_URL = 'https://novatools.app';

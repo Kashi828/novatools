@@ -6,6 +6,7 @@ import { Command } from 'cmdk';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { tools } from '@/data/tools';
+import '@/data/extra-tools';
 import { useHiddenTools } from '@/lib/use-hidden-tools';
 
 export function CommandPalette() {

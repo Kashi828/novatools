@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import './visual-consistency.css';
 import '@/data/ai-tools';
+import '@/data/extra-tools';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeFavicon } from '@/components/theme-favicon';
 import { Navbar } from '@/components/navbar';
@@ -48,5 +49,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const maintenanceActive = isMaintenanceActive(maintenance);
   const admin = maintenanceActive ? await isAdminUser() : false;
   const fontVars = `${playfair.variable} ${spaceGrotesk.variable} ${merriweather.variable} ${poppins.variable} ${inter.variable}`;
-  return <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up" appearance={{ variables: { colorPrimary: '#C9A961' } }}><html lang="en" className={fontVars} suppressHydrationWarning><body className="flex min-h-screen flex-col bg-noise"><script dangerouslySetInnerHTML={{ __html: appearanceBootstrap }} /><ThemeProvider><ThemeFavicon /><ToastProvider>{maintenanceActive && !admin ? <MaintenancePage settings={maintenance} /> : <><SiteAnnouncement /><PromoBanner /><Navbar /><CommandPaletteLoader /><main className="flex-1"><PageTransition>{children}</PageTransition></main><Footer /></>}</ToastProvider></ThemeProvider></body></html></ClerkProvider>;
+  const clerkConfigured = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY);
+  const document = <html lang="en" className={fontVars} suppressHydrationWarning><body className="flex min-h-screen flex-col bg-noise"><script dangerouslySetInnerHTML={{ __html: appearanceBootstrap }} /><ThemeProvider><ThemeFavicon /><ToastProvider>{maintenanceActive && !admin ? <MaintenancePage settings={maintenance} /> : <><SiteAnnouncement /><PromoBanner /><Navbar authEnabled={clerkConfigured} /><CommandPaletteLoader /><main className="flex-1"><PageTransition>{children}</PageTransition></main><Footer /></>}</ToastProvider></ThemeProvider></body></html>;
+  return clerkConfigured
+    ? <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up" appearance={{ variables: { colorPrimary: '#C9A961' } }}>{document}</ClerkProvider>
+    : document;
 }
