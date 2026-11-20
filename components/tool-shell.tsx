@@ -22,25 +22,37 @@ export function ToolShell({ children, outputValue, downloadFilename = 'output.tx
   const { showToast } = useToast();
 
   async function handleCopy() {
-    if (!outputValue) return;
-    await copyToClipboard(outputValue);
-    setCopied(true);
-    showToast('Copied to clipboard', 'success');
-    setTimeout(() => setCopied(false), 1500);
+    if (outputValue === undefined || outputValue.length === 0) return;
+    try {
+      await copyToClipboard(outputValue);
+      setCopied(true);
+      showToast('Copied to clipboard', 'success');
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Could not copy this output', 'error');
+    }
   }
 
   async function handleShare() {
     if (!shareSlug) return;
-    await copyToClipboard(`${window.location.origin}/tools/${shareSlug}`);
-    setShared(true);
-    showToast('Link copied — share away', 'success');
-    setTimeout(() => setShared(false), 1500);
+    try {
+      await copyToClipboard(`${window.location.origin}/tools/${shareSlug}`);
+      setShared(true);
+      showToast('Link copied — share away', 'success');
+      window.setTimeout(() => setShared(false), 1500);
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Could not copy the share link', 'error');
+    }
   }
 
   function handleDownload() {
-    if (!outputValue) return;
-    downloadText(downloadFilename, outputValue);
-    showToast('Download started', 'success');
+    if (outputValue === undefined || outputValue.length === 0) return;
+    try {
+      downloadText(downloadFilename, outputValue);
+      showToast('Download started', 'success');
+    } catch {
+      showToast('Could not start the download', 'error');
+    }
   }
 
   return (
