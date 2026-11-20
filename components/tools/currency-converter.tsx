@@ -21,36 +21,39 @@ export function CurrencyConverter() {
   const [data, setData] = useState<RatesState | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
-    let cancelled = false;
+    const controller = new AbortController();
+
     async function fetchRates() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`https://open.er-api.com/v6/latest/${from}`);
+        const res = await fetch(`https://open.er-api.com/v6/latest/${from}`, { signal: controller.signal });
         if (!res.ok) throw new Error('Failed to fetch exchange rates');
         const json = await res.json();
-        if (json.result !== 'success') throw new Error('Exchange rate provider returned an error');
-        if (!cancelled) {
-          setData({ base: json.base_code, rates: json.rates, updatedAt: json.time_last_update_utc });
+        if (json.result !== 'success' || !json.rates || typeof json.rates !== 'object') {
+          throw new Error('Exchange rate provider returned an invalid response');
         }
+        setData({ base: json.base_code, rates: json.rates, updatedAt: json.time_last_update_utc });
       } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : 'Could not load exchange rates');
+        if (e instanceof Error && e.name === 'AbortError') return;
+        setError(e instanceof Error ? e.message : 'Could not load exchange rates');
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
+
     fetchRates();
-    return () => {
-      cancelled = true;
-    };
-  }, [from]);
+    return () => controller.abort();
+  }, [from, retryCount]);
 
   const result = useMemo(() => {
-    const amt = parseFloat(amount);
-    if (!data || isNaN(amt) || !data.rates[to]) return null;
-    return amt * data.rates[to];
+    const amt = Number(amount);
+    const rate = data?.rates[to];
+    if (!data || !Number.isFinite(amt) || !Number.isFinite(rate)) return null;
+    return amt * rate;
   }, [amount, data, to]);
 
   return (
@@ -65,6 +68,7 @@ export function CurrencyConverter() {
         </div>
         <div className="flex items-end justify-center pb-2">
           <button
+            type="button"
             onClick={() => {
               setFrom(to);
               setTo(from);
@@ -85,6 +89,8 @@ export function CurrencyConverter() {
         <label className="mb-1 block text-sm font-medium">Amount</label>
         <input
           type="number"
+          min="0"
+          step="any"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           className="w-full rounded-xl border border-black/10 bg-white/60 p-3 text-sm outline-none focus:border-primary-400 dark:border-white/10 dark:bg-white/5"
@@ -99,7 +105,10 @@ export function CurrencyConverter() {
 
       {error && (
         <div className="rounded-xl border border-danger/30 bg-danger/5 p-4 text-sm text-danger">
-          {error}. <Button size="sm" variant="outline" className="mt-2" onClick={() => setFrom((f) => f)}>Retry</Button>
+          <p>{error}</p>
+          <Button size="sm" variant="outline" className="mt-2" onClick={() => setRetryCount((count) => count + 1)} disabled={loading}>
+            Retry
+          </Button>
         </div>
       )}
 
