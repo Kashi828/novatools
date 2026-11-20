@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import './visual-consistency.css';
 import '@/data/ai-tools';
+import '@/data/extra-tools';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeFavicon } from '@/components/theme-favicon';
 import { Navbar } from '@/components/navbar';
