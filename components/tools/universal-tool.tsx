@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Copy, Check, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ToolShell } from '@/components/tool-shell';
 import { Button } from '@/components/ui/button';
@@ -123,14 +123,14 @@ function transform(slug: string, input: string, a: number, b: number, c: number)
 
 export function UniversalTool() {
   const pathname = usePathname(); const slug = pathname.split('/').filter(Boolean).pop() || 'remove-extra-spaces'; const config = EXTRA_TOOL_CONFIG[slug] || EXTRA_TOOL_CONFIG['remove-extra-spaces'];
-  const [input,setInput]=useState(''); const [output,setOutput]=useState(''); const [a,setA]=useState(''); const [b,setB]=useState(''); const [c,setC]=useState(''); const [copied,setCopied]=useState(false);
-  const run=()=>{ const values=[a,b,c].map(Number); setOutput(transform(slug,input,values[0],values[1],values[2])); setCopied(false); };
+  const [input,setInput]=useState(''); const [output,setOutput]=useState(''); const [a,setA]=useState(''); const [b,setB]=useState(''); const [c,setC]=useState('');
+  const run=()=>{ const values=[a,b,c].map(Number); setOutput(transform(slug,input,values[0],values[1],values[2])); };
   const numberHint = useMemo(()=>config.mode==='numbers' ? 'Use the numeric fields below for this calculator.' : '',[config.mode]);
   return <ToolShell outputValue={output||undefined} onReset={()=>{setInput('');setOutput('');setA('');setB('');setC('');}} shareSlug={slug}>
     <div className="rounded-2xl border border-primary-500/15 bg-primary-500/5 p-5"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-500/10 text-primary-500"><Sparkles className="h-5 w-5"/></div><div><h2 className="font-semibold">{config.title}</h2><p className="text-xs text-secondary-400">{config.description}</p></div></div></div>
     {config.mode==='numbers' && <div className="grid gap-3 sm:grid-cols-3">{[a,b,c].map((v,i)=><input key={i} type="number" value={v} onChange={e=>[setA,setB,setC][i](e.target.value)} placeholder={['Value 1','Value 2','Value 3'][i]} className="rounded-xl border border-current/10 bg-[rgb(var(--surface-page)/.6)] px-4 py-3 text-sm outline-none focus:border-primary-500/40"/>)}</div>}
     {numberHint && <p className="text-xs text-secondary-400">{numberHint}</p>}
     <div className="grid gap-4 lg:grid-cols-2"><textarea value={input} onChange={e=>setInput(e.target.value)} rows={12} placeholder={config.placeholder} className="w-full rounded-2xl border border-current/10 bg-[rgb(var(--surface-page)/.6)] p-4 text-sm leading-6 outline-none focus:border-primary-500/40"/><textarea value={output} readOnly rows={12} placeholder="Result will appear here..." className="w-full rounded-2xl border border-current/10 bg-[rgb(var(--surface-page)/.45)] p-4 text-sm leading-6 outline-none"/></div>
-    <div className="flex flex-wrap gap-3"><Button onClick={run}>Run tool</Button>{output && <Button variant="outline" onClick={()=>{void navigator.clipboard?.writeText(output);setCopied(true);}}>{copied?<Check className="h-4 w-4"/>:<Copy className="h-4 w-4"/>}{copied?'Copied':'Copy result'}</Button>}</div>
+    <div className="flex flex-wrap gap-3"><Button onClick={run}>Run tool</Button></div>
   </ToolShell>;
 }
