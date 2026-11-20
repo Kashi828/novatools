@@ -2,22 +2,19 @@ import { NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
 import { clerkMiddleware } from '@clerk/nextjs/server';
 
-let maintenanceRedis: Redis | null = null;
-if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-  maintenanceRedis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN,
-  });
-}
-
 const MAINTENANCE_KEY = 'novatools:maintenance';
 
 export default clerkMiddleware(async (_auth, request) => {
   const { pathname } = request.nextUrl;
   if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin') || pathname === '/api/maintenance') return;
-  if (!maintenanceRedis) return;
+  const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!redisUrl || !redisToken) return;
 
   try {
+    // Initialize Redis inside the guarded request path. A bad/missing deployment
+    // configuration must never prevent the middleware from serving the site.
+    const maintenanceRedis = new Redis({ url: redisUrl, token: redisToken });
     const settings = await maintenanceRedis.get<{ enabled?: boolean; startAt?: string | null; endAt?: string | null; message?: string }>(MAINTENANCE_KEY);
     if (!settings?.enabled) return;
     const now = Date.now();
