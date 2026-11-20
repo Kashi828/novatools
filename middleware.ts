@@ -1,10 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
-import { clerkMiddleware } from '@clerk/nextjs/server';
 
 const MAINTENANCE_KEY = 'novatools:maintenance';
 
-export default clerkMiddleware(async (_auth, request) => {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin') || pathname === '/api/maintenance') return;
   const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
@@ -39,7 +38,7 @@ export default clerkMiddleware(async (_auth, request) => {
   } catch {
     return;
   }
-});
+}
 
 function escapeHtml(value: string) {
   return value.replace(/[&<>\"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] || c));
