@@ -68,7 +68,7 @@ export default async function HomePage() {
         <div className="ect-wrap">
           <div className="nova-section-intro">
             <div><div className="nova-section-kicker"><i /> NOVATOOLS / 001</div><h2>Less searching.<br /><em>More doing.</em></h2></div>
-            <p>Whether you're solving a quick calculation, preparing a document, or building something for the web, NovaTools brings the useful essentials into one focused workspace.</p>
+            <p>Whether you&apos;re solving a quick calculation, preparing a document, or building something for the web, NovaTools brings the useful essentials into one focused workspace.</p>
           </div>
           <div className="nova-feature-panels">
             <Link href="/tools" className="nova-feature-panel nova-feature-panel--large"><span className="nova-panel-code">01 / THE TOOL LIBRARY</span><div><h3>Everyday tools.<br />Ready when you are.</h3><p>Explore practical utilities for calculations, files, images, text, development, and more.</p><span className="nova-panel-link">BROWSE ALL TOOLS <ArrowUpRight className="h-4 w-4" /></span></div><span className="nova-panel-orbit" /></Link>
